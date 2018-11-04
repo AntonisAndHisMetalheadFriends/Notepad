@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +32,7 @@ public class LogInActivity extends AppCompatActivity {
     private Button Register;
     private FirebaseAuth mAuth;
     private String email,password;
+    private ProgressBar progressBarLogin;
 
 
 
@@ -65,19 +67,26 @@ public class LogInActivity extends AppCompatActivity {
 
             }
         });
+
+        progressBarLogin = findViewById(R.id.progressBarLogin);
+
+        progressBarLogin.setVisibility(View.INVISIBLE);
+
     }
 
 
     private void signIn(String email, String password) {
 
-
+        progressBarLogin.setVisibility(View.VISIBLE);
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
-                            // Sign in succes
+                            // Sign in success
                             FirebaseUser user = mAuth.getCurrentUser();
+                            progressBarLogin.setVisibility(View.INVISIBLE);
+                            Toast.makeText(LogInActivity.this,"Login Successfull",Toast.LENGTH_LONG).show();
                             startActivity(new Intent(LogInActivity.this, RegisterActivity.class));
 
 
