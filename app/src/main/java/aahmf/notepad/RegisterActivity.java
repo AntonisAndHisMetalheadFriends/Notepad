@@ -15,8 +15,12 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.regex.Pattern;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -42,11 +46,6 @@ public class RegisterActivity extends AppCompatActivity {
         String retype = Retype.getText().toString();
 
 
-
-
-        //uservars.setName(Name);
-        //uservars.setUsername(username);
-
         final User user = new User(Name,username);
 
 
@@ -56,39 +55,52 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
-        if(Name.isEmpty())
+        if(Name.trim().isEmpty())
         {
-            Toast.makeText(RegisterActivity.this,"Please Enter Full Name",Toast.LENGTH_LONG).show();
+           RealName.setError("Set A Name");
+           RealName.requestFocus();
+           return;
         }
 
-        if(email.isEmpty())
+
+        if(username.trim().isEmpty()==true)
         {
-            Toast.makeText(RegisterActivity.this,"Please Enter a valid email",Toast.LENGTH_LONG).show();
+            Username.setError("Set a username");
+            Username.requestFocus();
+            return;
         }
 
-        if(username.isEmpty())
+        if(email.trim().isEmpty()==true)
         {
-            Toast.makeText(RegisterActivity.this,"Please Enter a username",Toast.LENGTH_LONG).show();
+            Email.setError("Set An Email");
+            Email.requestFocus();
+            return;
         }
-
-        if(password.isEmpty())
+        if(password.trim().isEmpty()==true)
         {
-            Toast.makeText(RegisterActivity.this,"Please Enter a password",Toast.LENGTH_LONG).show();
+            Pass.setError("Set a Password");
+            Pass.requestFocus();
+            return;
         }
 
         if(password.length()<6)
         {
-            Toast.makeText(RegisterActivity.this,"Enter A Password Which Contains At Least 6 Characters or Numbers",Toast.LENGTH_LONG).show();
+            Pass.setError("Password Must Be 6 Characters long");
+            Pass.requestFocus();
+            return;
         }
 
-        if(retype.isEmpty())
+        if(retype.trim().isEmpty()==true)
         {
-            Toast.makeText(RegisterActivity.this,"Please Retype The Password You Entered",Toast.LENGTH_LONG).show();
+            Retype.setError("please retype your password");
+            Retype.requestFocus();
+            return;
         }
 
         if(!password.matches(retype))
         {
             Toast.makeText(RegisterActivity.this,"The Password And Retype Password Must Be The Same",Toast.LENGTH_LONG).show();
+            return;
         }
 
 
@@ -112,18 +124,77 @@ public class RegisterActivity extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(task.isSuccessful())
                                         {
-                                            Toast.makeText(RegisterActivity.this,"Registration Successfull Welcome to Our App ",Toast.LENGTH_LONG).show();
+                                            sendVerificationEmail();
+                                            Toast.makeText(RegisterActivity.this,"Registration Successfull check your email address for verification ",Toast.LENGTH_LONG).show();
                                             startActivity(new Intent(RegisterActivity.this, LogInActivity.class));
+
+                                        }
+
+                                        else if(!task.isSuccessful())
+                                        {
 
                                         }
                                     }
                                 });
+                    }
+
+                    else if(!task.isSuccessful())
+                    {
+                        try
+                        {
+                            throw  task.getException();
+                        }
+                        catch(FirebaseAuthUserCollisionException MailExists)
+                        {
+                            Email.setError("Mail Already Exists In Database");
+                            Email.requestFocus();
+                            Email.setText("");
+                            progressBar.setVisibility(View.INVISIBLE);
+                            return;
+                            //startActivity(new Intent(RegisterActivity.this,RegisterActivity.class));
+
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
                     }
                 }
             });
         }
 
 
+    }
+
+    private void sendVerificationEmail()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        user.sendEmailVerification()
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            // email sent
+
+
+                            // after email is sent just logout the user and finish this activity
+                            FirebaseAuth.getInstance().signOut();
+                            finish();
+                        }
+                        else
+                        {
+                            // email not sent, so display message and restart the activity or do whatever you wish to do
+
+                            //restart this activity
+                            overridePendingTransition(0, 0);
+                            finish();
+                            overridePendingTransition(0, 0);
+                            startActivity(getIntent());
+
+                        }
+                    }
+                });
     }
 
 

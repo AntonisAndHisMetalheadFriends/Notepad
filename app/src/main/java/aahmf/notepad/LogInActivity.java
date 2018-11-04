@@ -74,6 +74,27 @@ public class LogInActivity extends AppCompatActivity {
 
     }
 
+    private void checkIfEmailVerified()
+    {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user.isEmailVerified())
+        {
+            // user is verified, so you can finish this activity or send user to activity which you want.
+            finish();
+        }
+        else
+        {
+            // email is not verified, so just prompt the message to the user and restart this activity.
+            // NOTE: don't forget to log out the user.
+            progressBarLogin.setVisibility(View.INVISIBLE);
+            FirebaseAuth.getInstance().signOut();
+
+
+            //restart this activity
+
+        }
+    }
 
     private void signIn(String email, String password) {
 
@@ -82,23 +103,26 @@ public class LogInActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            // Sign in success
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            progressBarLogin.setVisibility(View.INVISIBLE);
-                            Toast.makeText(LogInActivity.this,"Login Successfull",Toast.LENGTH_LONG).show();
-                            startActivity(new Intent(LogInActivity.this, RegisterActivity.class));
+
+                            if (task.isSuccessful()) {
+                                // Sign in success
+
+                                checkIfEmailVerified();
+                                progressBarLogin.setVisibility(View.INVISIBLE);
+
+                                Toast.makeText(LogInActivity.this, "Login Successfull", Toast.LENGTH_LONG).show();
+                                startActivity(new Intent(LogInActivity.this, RegisterActivity.class));
 
 
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Context context = getApplicationContext();
-                            CharSequence text = "Incorrect email/password";
-                            int duration = Toast.LENGTH_SHORT;
-                            Toast toastOne = makeText(context, text, duration);
-                            toastOne.show();
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                Context context = getApplicationContext();
+                                CharSequence text = "Incorrect email/password";
+                                int duration = Toast.LENGTH_SHORT;
+                                Toast toastOne = makeText(context, text, duration);
+                                toastOne.show();
 
-                        }
+                            }
 
 
                     }
