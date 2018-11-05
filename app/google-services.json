@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "137011022867-s9nefc0vsohrgletcsirdp9m9sr4o7bo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "aahmf.notepad",
+            "certificate_hash": "356fd02ff97d26d2470f9136372a542ec659941b"
+          }
+        },
+        {
           "client_id": "137011022867-e6glcc0k1at0jeab54b5piqlbmgba9ur.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -40,7 +48,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "137011022867-e6glcc0k1at0jeab54b5piqlbmgba9ur.apps.googleusercontent.com",
+              "client_id": "137011022867-2gcdr9k2do0cddi8t2b4u4dq9v5qng3u.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
