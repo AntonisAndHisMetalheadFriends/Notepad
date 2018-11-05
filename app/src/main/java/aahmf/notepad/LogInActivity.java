@@ -13,7 +13,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.facebook.AccessToken;
+import com.facebook.*;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -160,12 +160,40 @@ public class LogInActivity extends AppCompatActivity {
                 if(!task.isSuccessful()){
                     Toast.makeText(getApplicationContext(),R.string.firebase_error_login, Toast.LENGTH_LONG).show();
                 }
+
+                else
+                {
+                    startActivity(new Intent(LogInActivity.this,MainMenuActivity.class));
+                }
             }
         });
     }
 
     private void signIn(String email, String password)
     {
+        if(Name.getText().toString().isEmpty())
+        {
+            Name.setError("Give An Email");
+            Name.requestFocus();
+            Name.setText("");
+            return;
+        }
+
+        if(Password.getText().toString().isEmpty())
+        {
+            Password.setError("Give A Password");
+            Password.requestFocus();
+            Password.setText("");
+            return;
+        }
+
+        if(Password.getText().toString().length()<6)
+        {
+            Password.setError("The password must be 6 Characters long");
+            Password.requestFocus();
+            Password.setText("");
+            return;
+        }
 
         progressBarLogin.setVisibility(View.VISIBLE);
         mAuth.signInWithEmailAndPassword(email, password)
@@ -181,7 +209,7 @@ public class LogInActivity extends AppCompatActivity {
                                 progressBarLogin.setVisibility(View.INVISIBLE);
 
                                 Toast.makeText(LogInActivity.this, "Login Successfull", Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(LogInActivity.this, RegisterActivity.class));
+                                startActivity(new Intent(LogInActivity.this, MainMenuActivity.class));
 
 
                             } else
@@ -210,6 +238,7 @@ public class LogInActivity extends AppCompatActivity {
     protected void onStart()
     {
         super.onStart();
+
         mAuth.addAuthStateListener(firebaseAuthListner);
     }
 
