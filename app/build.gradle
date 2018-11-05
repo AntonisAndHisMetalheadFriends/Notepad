@@ -32,6 +32,5 @@ dependencies {
     implementation 'com.firebase:firebase-client-android:2.5.2'
 
 
-
 }
 apply plugin: 'com.google.gms.google-services'
