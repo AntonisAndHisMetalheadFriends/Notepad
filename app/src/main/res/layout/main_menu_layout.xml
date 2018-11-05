@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="63dp"
+                android:layout_height="63dp"
+                android:contentDescription='"NoteImage"'
+                android:padding="4dp"
+                android:src="@color/colorAccent" />
+
+
+            <TextView
+                android:id="@+id/textViewTitle"
+                android:textSize="20dp"
+                android:layout_width="166dp"
+                android:layout_height="63dp"
+                android:layout_marginLeft="5dp"
+                android:layout_toRightOf="@id/imageView"
+                android:text="Note Title"
+
+                android:textColor="#000000" />
+
+            <Button
+                android:id="@+id/EditButton"
+                android:layout_width="63dp"
+                android:layout_height="63dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="5dp"
+                android:padding="4dp"
+                android:text="EDIT NOTE" />
+
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>
