@@ -143,17 +143,21 @@ public class LogInActivity extends AppCompatActivity {
         if (user.isEmailVerified())
         {
             // user is verified, so you can finish this activity or send user to activity which you want.
+            Toast.makeText(LogInActivity.this, "Login Successfull", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(LogInActivity.this, MainMenuActivity.class));
             finish();
         }
         else
         {
             // email is not verified, so just prompt the message to the user and restart this activity.
             // NOTE: don't forget to log out the user.
+            Toast.makeText(LogInActivity.this,"You Must Verify your account first",Toast.LENGTH_LONG).show();
             progressBarLogin.setVisibility(View.INVISIBLE);
             mAuth.getInstance().signOut();
 
 
-            //restart this activity
+
+
 
         }
     }
@@ -207,15 +211,16 @@ public class LogInActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
+
                             if (task.isSuccessful())
                             {
                                 // Sign in success
 
-                                checkIfEmailVerified();
-                                progressBarLogin.setVisibility(View.INVISIBLE);
 
-                                Toast.makeText(LogInActivity.this, "Login Successfull", Toast.LENGTH_LONG).show();
-                                startActivity(new Intent(LogInActivity.this, MainMenuActivity.class));
+                                progressBarLogin.setVisibility(View.INVISIBLE);
+                                checkIfEmailVerified();
+
+
 
 
                             } else
