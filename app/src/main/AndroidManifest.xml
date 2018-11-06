@@ -23,8 +23,9 @@
             android:configChanges=
                 "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
-        <activity android:name=".MainMenuActivity"></activity>
         <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".MainMenuActivity"></activity>
+        <activity android:name=".ResetPassword"></activity>
     </application>
 
 </manifest>
