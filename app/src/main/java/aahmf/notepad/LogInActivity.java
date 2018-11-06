@@ -81,6 +81,12 @@ public class LogInActivity extends AppCompatActivity {
         loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("email"));
 
+        FrgtPassword.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LogInActivity.this, ResetPassword.class));
+            }
+        });
 
         Register.setOnClickListener(new OnClickListener() {
             @Override
