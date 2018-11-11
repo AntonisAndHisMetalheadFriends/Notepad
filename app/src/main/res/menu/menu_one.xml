@@ -17,5 +17,14 @@
 
 
 
+    <item android:id= "@+id/create_note"
+        android:title= "@string/action_create_new_note"
+        app:showAsAction="never" />
+
+
+
+
+
+
 
 </menu>

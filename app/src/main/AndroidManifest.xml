@@ -39,6 +39,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="aahmf.notepad.MainMenuActivity" />
         </activity>
+        <activity android:name=".NewNoteActivity"></activity>
     </application>
 
 </manifest>
