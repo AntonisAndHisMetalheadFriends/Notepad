@@ -3,4 +3,10 @@
     <string name="facebook_app_id">250640302284656</string>
     <string name="fb_login_protocol_scheme">fb250640302284656</string>
     <string name="firebase_error_login">Firebase Login Error</string>
+    <string name="signed_in">Signed in</string>
+    <string name="settings">Settings</string>
+    <string name="sign_out">Sign out</string>
+    <string name="title_activity_settings">Settings</string>
+
+
 </resources>
