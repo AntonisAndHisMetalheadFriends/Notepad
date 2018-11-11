@@ -3,4 +3,5 @@
     <string name="facebook_app_id">250640302284656</string>
     <string name="fb_login_protocol_scheme">fb250640302284656</string>
     <string name="firebase_error_login">Firebase Login Error</string>
+    <string name="menu_action_newnote">AddNewNote</string>
 </resources>
