@@ -71,14 +71,14 @@ public class LogInActivity extends AppCompatActivity {
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         setContentView(R.layout.activity_log_in);
 
-        Name = (EditText)findViewById(R.id.etName);
-        Password = (EditText)findViewById(R.id.etPsswrd);
-        FrgtPassword = (TextView)findViewById(R.id.tvfrgtpass);
-        LogIn = (Button)findViewById(R.id.btnLogIn);
-        Register = (Button)findViewById(R.id.btnRgstr);
+        Name = findViewById(R.id.etName);
+        Password = findViewById(R.id.etPsswrd);
+        FrgtPassword = findViewById(R.id.tvfrgtpass);
+        LogIn = findViewById(R.id.btnLogIn);
+        Register = findViewById(R.id.btnRgstr);
         mAuth = FirebaseAuth.getInstance();
         callbackManager = CallbackManager.Factory.create();
-        loginButton = (LoginButton) findViewById(R.id.login_button);
+        loginButton = findViewById(R.id.login_button);
         loginButton.setReadPermissions(Arrays.asList("email"));
 
         FrgtPassword.setOnClickListener(new OnClickListener() {
@@ -153,7 +153,7 @@ public class LogInActivity extends AppCompatActivity {
             // NOTE: don't forget to log out the user.
             Toast.makeText(LogInActivity.this,"You Must Verify your account first",Toast.LENGTH_LONG).show();
             progressBarLogin.setVisibility(View.INVISIBLE);
-            mAuth.getInstance().signOut();
+            FirebaseAuth.getInstance().signOut();
 
 
 
