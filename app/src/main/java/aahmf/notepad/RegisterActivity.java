@@ -206,7 +206,7 @@ public class RegisterActivity extends AppCompatActivity {
         setupUIViews();
 
 
-    };
+    }
 
     @Override
     protected void onStart() {
@@ -223,13 +223,13 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupUIViews(){
-        Username = (EditText)findViewById(R.id.etUserName);
-        RealName = (EditText)findViewById(R.id.etRealName);
-        Email = (EditText)findViewById(R.id.etEmail);
-        Pass = (EditText) findViewById(R.id.etUserpass);
-        Retype = (EditText)findViewById(R.id.etRetypepass);
-        Cancel = (TextView) findViewById(R.id.tvCancel);
-        Rgstr = (Button) findViewById(R.id.btnRegister);
+        Username = findViewById(R.id.etUserName);
+        RealName = findViewById(R.id.etRealName);
+        Email = findViewById(R.id.etEmail);
+        Pass = findViewById(R.id.etUserpass);
+        Retype = findViewById(R.id.etRetypepass);
+        Cancel = findViewById(R.id.tvCancel);
+        Rgstr = findViewById(R.id.btnRegister);
         progressBar = findViewById(R.id.progressBar);
 
 
@@ -245,4 +245,4 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
-};
+}

@@ -31,13 +31,13 @@ public class ResetPassword extends AppCompatActivity {
 
         setContentView(R.layout.activity_reset_password);
 
-        inputEmail = (EditText) findViewById(R.id.Email_text);
+        inputEmail = findViewById(R.id.Email_text);
 
-        btnReset = (Button) findViewById(R.id.forgotPassword_button);
+        btnReset = findViewById(R.id.forgotPassword_button);
 
-        btnBack = (Button) findViewById(R.id.goBack_Button);
+        btnBack = findViewById(R.id.goBack_Button);
 
-        progressBar = (ProgressBar) findViewById(R.id.progressBarReset);
+        progressBar = findViewById(R.id.progressBarReset);
 
         auth = FirebaseAuth.getInstance();
         progressBar.setVisibility(View.INVISIBLE);
