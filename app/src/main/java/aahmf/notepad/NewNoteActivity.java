@@ -39,6 +39,7 @@ public class NewNoteActivity extends AppCompatActivity {
         AddFile = findViewById(R.id.btnAddFile);
         CancelNote = findViewById(R.id.btnCancelNewNote);
         EditNote = findViewById(R.id.btnEditNote);
+
         SaveNote = findViewById(R.id.button9);
         WriteNote = findViewById(R.id.etWriteNote);
 

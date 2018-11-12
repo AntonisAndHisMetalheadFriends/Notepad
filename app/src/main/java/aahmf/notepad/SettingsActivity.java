@@ -32,12 +32,12 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        sampleText = (TextView) findViewById(R.id.sampleTextView);
-        spinnerText = (Spinner) findViewById(R.id.fontSpinner);
-        spinnerColor = (Spinner) findViewById(R.id.spinnerColor);
-        backgroundColor= (Spinner) findViewById(R.id.bckgroundColor);
-        buttonApply= (Button) findViewById(R.id.btnApply);
-        btnBack= (Button) findViewById(R.id.btnBack);
+        sampleText = findViewById(R.id.sampleTextView);
+        spinnerText = findViewById(R.id.fontSpinner);
+        spinnerColor = findViewById(R.id.spinnerColor);
+        backgroundColor= findViewById(R.id.bckgroundColor);
+        buttonApply= findViewById(R.id.btnApply);
+        btnBack= findViewById(R.id.btnBack);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(SettingsActivity.this,
                 android.R.layout.simple_spinner_item, paths);
@@ -76,7 +76,6 @@ public class SettingsActivity extends AppCompatActivity {
                         break;
 
                 }
-                ;
             }
 
             @Override
