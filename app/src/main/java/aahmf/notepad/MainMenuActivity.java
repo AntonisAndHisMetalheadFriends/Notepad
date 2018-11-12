@@ -79,9 +79,6 @@ public class MainMenuActivity extends AppCompatActivity {
             case R.id.settings:
                 startActivity(new Intent(MainMenuActivity.this,SettingsActivity.class));
                 break;
-            case R.id.create_note:
-                startActivity(new Intent(MainMenuActivity.this, NewNoteActivity.class));
-                break;
         }
 
         return super.onOptionsItemSelected(item);
