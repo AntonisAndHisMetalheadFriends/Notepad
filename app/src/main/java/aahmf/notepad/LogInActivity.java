@@ -231,6 +231,7 @@ public class LogInActivity extends AppCompatActivity {
                                 int duration = Toast.LENGTH_SHORT;
                                 Toast toastOne = makeText(context, text, duration);
                                 toastOne.show();
+                                progressBarLogin.setVisibility(View.INVISIBLE);
 
                             }
 

@@ -1,10 +1,8 @@
 package aahmf.notepad;
 
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -13,11 +11,11 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +25,7 @@ public class MainMenuActivity extends AppCompatActivity {
     NoteEntryAdapter adapter;
     List<NoteEntry> noteEntryList;
     private FirebaseAuth kAuth;
-
+    private NewNoteActivity NNa;
 
 
 
@@ -35,12 +33,25 @@ public class MainMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        setAnTestFile();
+        String path = "/data/user/0/aahmf.notepad/files";
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+       /* for (int i = 0; i < files.length; i++)
+        {
+            Log.d("Files", "FileName:" + files[i].getName());
+        }*/
+
 
         noteEntryList = new ArrayList<>();
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        noteEntryList.add(
+        for(int i = 0;i<files.length;i++)
+        {
+            noteEntryList.add(new NoteEntry(i,files[i].getName(),R.drawable.noteicon,""));
+        }
+       /* noteEntryList.add(
                 new NoteEntry(1,"Invoker",R.drawable.ka_el,"Mid"));
         noteEntryList.add(
                 new NoteEntry(2,"Akasha",R.drawable.akasha,"Mid"));
@@ -55,7 +66,7 @@ public class MainMenuActivity extends AppCompatActivity {
         noteEntryList.add(
                 new NoteEntry(7,"Mortred",R.drawable.mortred,"Carry"));
         noteEntryList.add(
-                new NoteEntry(8,"Alleria",R.drawable.alleria,"Mid"));
+                new NoteEntry(8,"Alleria",R.drawable.alleria,"Mid"));*/
         adapter = new NoteEntryAdapter(this, noteEntryList);
         recyclerView.setAdapter(adapter);
         kAuth = FirebaseAuth.getInstance();
@@ -92,6 +103,20 @@ public class MainMenuActivity extends AppCompatActivity {
         kAuth.signOut();
             startActivity(new Intent(MainMenuActivity.this, LogInActivity.class));
             Toast.makeText(getApplicationContext(), "Logged out", Toast.LENGTH_LONG).show();
+
+        }
+
+        public void setAnTestFile()
+        {
+            try {
+                FileOutputStream fileOutputStream = openFileOutput("Test", MODE_PRIVATE);
+                fileOutputStream.write("Test".getBytes());
+                fileOutputStream.close();
+            }
+            catch (IOException e)
+            {
+
+            }
 
         }
 

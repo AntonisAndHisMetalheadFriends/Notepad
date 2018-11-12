@@ -2,6 +2,7 @@ package aahmf.notepad;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,9 +27,10 @@ public class NewNoteActivity extends AppCompatActivity {
     private Button EditNote;
     private Button SaveNote;
 
-    private EditText WriteNote;
+    private EditText WriteNote,Title;
 
     private String NoteTitle;
+    private String Notepath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,17 +61,19 @@ public class NewNoteActivity extends AppCompatActivity {
                 DialogBuilder.setTitle("Give Note Title");
 
 
-                EditText Title = new EditText(NewNoteActivity.this);
+                DialogBuilder.setMessage("Give the note title to the textbox to save the note to your phone");
+                Title = new EditText(NewNoteActivity.this);
                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                         LinearLayout.LayoutParams.MATCH_PARENT,
                         LinearLayout.LayoutParams.MATCH_PARENT);
                 Title.setLayoutParams(lp);
                 DialogBuilder.setView(Title);
-                NoteTitle=Title.getText().toString();
+
 
                 DialogBuilder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        NoteTitle=Title.getText().toString();
                         SaveNote(NoteTitle);
                     }
                 });
@@ -80,10 +85,16 @@ public class NewNoteActivity extends AppCompatActivity {
         });
     }
 
+    public String getPath()
+    {
+        return Notepath;
+    }
+
     public void SaveNote(String name) {
         String Note = WriteNote.getText().toString();
-        try {
+        try{
             FileOutputStream fileOutputStream =openFileOutput(name,MODE_PRIVATE);
+            Notepath = getFileStreamPath(name).toString();
             fileOutputStream.write(Note.getBytes());
             fileOutputStream.close();
             Toast.makeText(NewNoteActivity.this, "Text Saved", Toast.LENGTH_LONG).show();
