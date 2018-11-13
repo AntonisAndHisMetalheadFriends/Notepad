@@ -60,7 +60,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
         return noteEntryList.size();
     }
 
-    public void filterList(ArrayList<NoteEntry> filteredList){
+    public void  filterList(ArrayList<NoteEntry> filteredList){
         noteEntryList=filteredList;
         notifyDataSetChanged();
     }

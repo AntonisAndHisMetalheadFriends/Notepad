@@ -51,6 +51,7 @@ public class MainMenuActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
                 filter(s.toString());
+
             }
         });
 
@@ -83,13 +84,14 @@ public class MainMenuActivity extends AppCompatActivity {
     }
         private void filter(String text){
         ArrayList<NoteEntry> filteredList = new ArrayList<>();
+        NoteEntryAdapter NEA  = new NoteEntryAdapter(this,filteredList);
         for(NoteEntry noteEntry : noteEntryList){
             if(noteEntry.getTitle().toLowerCase().contains(text.toLowerCase())){
                 filteredList.add(noteEntry);
             }
         }
-        NoteEntryAdapter.filterList(filteredList);
-        noteEntryList = new ArrayList<>(filteredList);
+        NEA.filterList(filteredList);
+        recyclerView.setAdapter(NEA);
         }
 
 

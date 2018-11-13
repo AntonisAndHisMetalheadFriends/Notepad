@@ -88,7 +88,7 @@ public class NewNoteActivity extends AppCompatActivity {
             }
         });
     }
-    
+
     public void WriteXml(String xmlFile)
     {
         String NoteText = WriteNote.getText().toString();
