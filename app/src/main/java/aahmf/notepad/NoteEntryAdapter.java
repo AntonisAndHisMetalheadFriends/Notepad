@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -57,6 +58,11 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
     @Override
     public int getItemCount() {
         return noteEntryList.size();
+    }
+
+    public void filterList(ArrayList<NoteEntry> filteredList){
+        noteEntryList=filteredList;
+        notifyDataSetChanged();
     }
 
     class NoteEntryViewHolder extends RecyclerView.ViewHolder{
