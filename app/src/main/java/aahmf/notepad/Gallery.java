@@ -13,27 +13,33 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
+
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Gallery extends AppCompatActivity {
-
-    private Button btn;
+    private Button btn,Back;
     int PICK_IMAGE_MULTIPLE = 1;
     String imageEncoded;
     List<String> imagesEncodedList;
     private GridView gvGallery;
     private GalleryAdapter galleryAdapter;
+    protected static ArrayList ImagePaths;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
         btn = findViewById(R.id.btn);
+        Back = findViewById(R.id.svb);
+
         gvGallery = (GridView)findViewById(R.id.gv);
 
-        btn.setOnClickListener(new View.OnClickListener() {
+        btn.setOnClickListener(new View.OnClickListener()
+        {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
@@ -43,8 +49,14 @@ public class Gallery extends AppCompatActivity {
                 startActivityForResult(Intent.createChooser(intent,"Select Picture"), PICK_IMAGE_MULTIPLE);
             }
         });
-
+        Back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Gallery.this, NewNoteActivity.class));
+            }
+        });
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -104,9 +116,9 @@ public class Gallery extends AppCompatActivity {
                             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
                                     .getLayoutParams();
                             mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
-                            
 
                         }
+                        ImagePaths= mArrayUri;
                         Log.v("LOG_TAG", "Selected Images" + mArrayUri.size());
                     }
                 }

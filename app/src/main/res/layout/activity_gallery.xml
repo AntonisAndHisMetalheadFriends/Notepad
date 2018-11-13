@@ -8,21 +8,27 @@
     tools:context=".Gallery">
 
     <GridView
+        android:id="@+id/gv"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:id="@+id/gv"
-        android:numColumns="3"
-        android:layout_weight="1">
-    </GridView>
+        android:layout_weight="1"
+        android:numColumns="3"></GridView>
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/btn"
-        android:text="Select Multiple Images"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
-        android:layout_marginLeft="10dp"
-        />
+        android:text="Select Multiple Images" />
+
+    <Button
+        android:id="@+id/svb"
+        android:layout_width="124dp"
+        android:layout_height="wrap_content"
+        android:text="Save and go back" />
+
 
 </LinearLayout>
