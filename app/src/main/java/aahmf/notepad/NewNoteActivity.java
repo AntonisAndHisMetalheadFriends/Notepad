@@ -21,6 +21,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class NewNoteActivity extends AppCompatActivity {
 
@@ -54,6 +56,13 @@ public class NewNoteActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(NewNoteActivity.this, MainMenuActivity.class));
+            }
+        });
+
+        AddImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(NewNoteActivity.this, Gallery.class));
             }
         });
 
@@ -102,6 +111,9 @@ public class NewNoteActivity extends AppCompatActivity {
             xmlSerializer.startTag(null,"Text");
             xmlSerializer.text(NoteText);
             xmlSerializer.endTag(null, "Text");
+            xmlSerializer.startTag(null,"Image Paths");
+            xmlSerializer.text(String.valueOf(Gallery.ImagePaths));
+            xmlSerializer.endTag(null,"Image Paths" );
             xmlSerializer.endTag(null, "userData");
             xmlSerializer.endDocument();
             xmlSerializer.flush();
