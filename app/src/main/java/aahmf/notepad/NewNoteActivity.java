@@ -1,21 +1,26 @@
 package aahmf.notepad;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Xml;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlSerializer;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.StringWriter;
 
 public class NewNoteActivity extends AppCompatActivity {
 
@@ -30,7 +35,6 @@ public class NewNoteActivity extends AppCompatActivity {
     private EditText WriteNote,Title;
 
     private String NoteTitle;
-    private String Notepath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +78,7 @@ public class NewNoteActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         NoteTitle=Title.getText().toString();
-                        SaveNote(NoteTitle);
+                        WriteXml(NoteTitle);
                     }
                 });
 
@@ -84,28 +88,41 @@ public class NewNoteActivity extends AppCompatActivity {
             }
         });
     }
-
-    public String getPath()
+    
+    public void WriteXml(String xmlFile)
     {
-        return Notepath;
-    }
-
-    public void SaveNote(String name) {
-        String Note = WriteNote.getText().toString();
-        try{
-            FileOutputStream fileOutputStream =openFileOutput(name,MODE_PRIVATE);
-            Notepath = getFileStreamPath(name).toString();
-            fileOutputStream.write(Note.getBytes());
-            fileOutputStream.close();
-            Toast.makeText(NewNoteActivity.this, "Text Saved", Toast.LENGTH_LONG).show();
+        String NoteText = WriteNote.getText().toString();
+        try {
+            FileOutputStream fileos= getApplicationContext().openFileOutput(xmlFile, Context.MODE_PRIVATE);
+            XmlSerializer xmlSerializer = Xml.newSerializer();
+            StringWriter writer = new StringWriter();
+            xmlSerializer.setOutput(writer);
+            xmlSerializer.startDocument("UTF-8", true);
+            xmlSerializer.startTag(null, "userData");
+            xmlSerializer.startTag(null,"Text");
+            xmlSerializer.text(NoteText);
+            xmlSerializer.endTag(null, "Text");
+            xmlSerializer.endTag(null, "userData");
+            xmlSerializer.endDocument();
+            xmlSerializer.flush();
+            String dataWrite = writer.toString();
+            fileos.write(dataWrite.getBytes());
+            fileos.close();
             startActivity(new Intent(NewNoteActivity.this,MainMenuActivity.class));
         }
-        catch (FileNotFoundException e)
-        {
+        catch (FileNotFoundException e) {
+
             e.printStackTrace();
         }
-        catch (IOException e)
-        {
+        catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
+        catch (IllegalStateException e) {
+
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+
             e.printStackTrace();
         }
     }
