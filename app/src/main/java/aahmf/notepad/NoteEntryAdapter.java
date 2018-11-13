@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -59,6 +60,8 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
         return noteEntryList.size();
     }
 
+
+
     class NoteEntryViewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
         TextView textView;
@@ -70,8 +73,12 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
          textView = itemView.findViewById(R.id.textView);
          cardView = itemView.findViewById(R.id.card_view);
      }
+
  }
 
 
-
+    public void filterList(ArrayList<NoteEntry> filteredList) {
+        noteEntryList = filteredList;
+        notifyDataSetChanged();
+    }
 }

@@ -6,8 +6,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.Toast;
 
 
@@ -33,6 +36,25 @@ public class MainMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        EditText editText = findViewById(R.id.edittext);
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                filter(s.toString());
+            }
+        });
+
+
         setAnTestFile();
         String path = "/data/user/0/aahmf.notepad/files";
         File directory = new File(path);
@@ -59,6 +81,19 @@ public class MainMenuActivity extends AppCompatActivity {
 
 
     }
+        private void filter(String text){
+        ArrayList<NoteEntry> filteredList = new ArrayList<>();
+        NoteEntryAdapter NEA = new NoteEntryAdapter(this,filteredList);
+        for(NoteEntry noteEntry : noteEntryList){
+            if(noteEntry.getTitle().toLowerCase().contains(text.toLowerCase())){
+                filteredList.add(noteEntry);
+            }
+        }
+        NEA.filterList(filteredList);
+        recyclerView.setAdapter(NEA);
+        }
+
+
         @Override
         public boolean onCreateOptionsMenu(Menu menu) {
             getMenuInflater().inflate(R.menu.menu_one, menu);
