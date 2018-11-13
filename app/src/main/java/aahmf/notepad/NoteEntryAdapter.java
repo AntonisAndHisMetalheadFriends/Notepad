@@ -60,10 +60,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
         return noteEntryList.size();
     }
 
-    public void  filterList(ArrayList<NoteEntry> filteredList){
-        noteEntryList=filteredList;
-        notifyDataSetChanged();
-    }
+
 
     class NoteEntryViewHolder extends RecyclerView.ViewHolder{
         ImageView imageView;
@@ -76,8 +73,12 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
          textView = itemView.findViewById(R.id.textView);
          cardView = itemView.findViewById(R.id.card_view);
      }
+
  }
 
 
-
+    public void filterList(ArrayList<NoteEntry> filteredList) {
+        noteEntryList = filteredList;
+        notifyDataSetChanged();
+    }
 }
