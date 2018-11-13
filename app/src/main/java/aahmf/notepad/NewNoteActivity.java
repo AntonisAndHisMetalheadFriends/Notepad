@@ -120,6 +120,7 @@ public class NewNoteActivity extends AppCompatActivity {
             String dataWrite = writer.toString();
             fileos.write(dataWrite.getBytes());
             fileos.close();
+            Toast.makeText(NewNoteActivity.this,"Note Saved In your phone",Toast.LENGTH_LONG).show();
             startActivity(new Intent(NewNoteActivity.this,MainMenuActivity.class));
         }
         catch (FileNotFoundException e) {
