@@ -40,6 +40,13 @@ public class NewNoteActivity extends AppCompatActivity {
             }
         });
 
+        AddImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(NewNoteActivity.this, Gallery.class));
+            }
+        });
+
         SaveNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
