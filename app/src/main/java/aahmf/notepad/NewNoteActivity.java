@@ -3,15 +3,19 @@ package aahmf.notepad;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Xml;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import org.xmlpull.v1.XmlSerializer;
@@ -31,9 +35,10 @@ public class NewNoteActivity extends AppCompatActivity {
     private Button AddImage;
     private Button AddFile;
     private Button CancelNote;
-    private Button EditNote;
     private Button SaveNote;
-
+    private Spinner noteClr;
+    private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
+    int bgColor;
     private EditText WriteNote,Title;
 
     private String NoteTitle;
@@ -47,7 +52,7 @@ public class NewNoteActivity extends AppCompatActivity {
         AddImage = findViewById(R.id.btnAddImage);
         AddFile = findViewById(R.id.btnAddFile);
         CancelNote = findViewById(R.id.btnCancelNewNote);
-        EditNote = findViewById(R.id.btnEditNote);
+        noteClr = findViewById(R.id.spNoteClr);
 
         SaveNote = findViewById(R.id.button9);
         WriteNote = findViewById(R.id.etWriteNote);
@@ -103,6 +108,40 @@ public class NewNoteActivity extends AppCompatActivity {
 
             }}
         });
+
+
+            ArrayAdapter<String> adapterOne = new ArrayAdapter<>(NewNoteActivity.this,android.R.layout.
+                    simple_spinner_item,coloursTwo);
+            adapterOne.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            noteClr.setAdapter(adapterOne);
+            noteClr.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    switch (position) {
+                        case 0:
+                            //white
+                            bgColor = getResources().getColor(R.color.colorWhite);
+                            break;
+                        case 1:
+                            //green
+                            bgColor = getResources().getColor(R.color.colorGreen);
+                            break;
+                        case 2:
+                            //yellow
+                            bgColor = getResources().getColor(R.color.colorYellow);
+                            break;
+                        case 3:
+                            //red
+                            bgColor = getResources().getColor(R.color.colorRed);
+                            break;
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                    bgColor = getResources().getColor(R.color.colorWhite);
+                }
+            });
     }
 
     public void WriteXml(String xmlFile)
@@ -127,6 +166,10 @@ public class NewNoteActivity extends AppCompatActivity {
             String dataWrite = writer.toString();
             fileos.write(dataWrite.getBytes());
             fileos.close();
+            SharedPreferences mSharedPref = getSharedPreferences("NoteColor", MODE_PRIVATE);
+            SharedPreferences.Editor mEditor = mSharedPref.edit();
+            mEditor.putInt(xmlFile,bgColor);
+            mEditor.apply();
             Toast.makeText(NewNoteActivity.this,"Note Saved In your phone",Toast.LENGTH_LONG).show();
             startActivity(new Intent(NewNoteActivity.this,MainMenuActivity.class));
         }
