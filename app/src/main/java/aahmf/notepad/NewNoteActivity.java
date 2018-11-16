@@ -69,6 +69,12 @@ public class NewNoteActivity extends AppCompatActivity {
         SaveNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                if(WriteNote.getText().toString().matches(""))
+                {
+                    Toast.makeText(NewNoteActivity.this,"Write Something Before Saving",Toast.LENGTH_LONG).show();
+                }
+                else{
                 AlertDialog.Builder DialogBuilder = new AlertDialog.Builder(NewNoteActivity.this);
 
                 DialogBuilder.setTitle("Give Note Title");
@@ -86,15 +92,16 @@ public class NewNoteActivity extends AppCompatActivity {
                 DialogBuilder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        NoteTitle=Title.getText().toString();
+                        NoteTitle = Title.getText().toString();
                         WriteXml(NoteTitle);
                     }
+
                 });
 
                DialogBuilder.create();
                DialogBuilder.show();
 
-            }
+            }}
         });
     }
 

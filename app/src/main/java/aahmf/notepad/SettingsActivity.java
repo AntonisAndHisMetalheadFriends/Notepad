@@ -179,6 +179,7 @@ public class SettingsActivity extends AppCompatActivity {
                 mEditor.putInt("Fcolor",fntClr);
                 mEditor.putInt("Bgcolor",bgClr);
                 mEditor.putString("font_path",fontPath);
+                mEditor.putInt("Fsize",24);
                 mEditor.apply();
             }
         });
