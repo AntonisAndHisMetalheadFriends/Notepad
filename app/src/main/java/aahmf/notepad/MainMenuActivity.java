@@ -26,9 +26,11 @@ import java.util.List;
 public class MainMenuActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     NoteEntryAdapter adapter;
-    List<NoteEntry> noteEntryList;
+    List<NoteEntry> noteEntryList = new ArrayList<>();
     private FirebaseAuth kAuth;
-    private NewNoteActivity NNa;
+    String path = "/data/user/0/aahmf.notepad/files";
+    File directory = new File(path);
+    File[] files = directory.listFiles();
 
 
 
@@ -37,6 +39,9 @@ public class MainMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         EditText editText = findViewById(R.id.edittext);
+
+
+
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -56,29 +61,20 @@ public class MainMenuActivity extends AppCompatActivity {
 
 
         setAnTestFile();
-        String path = "/data/user/0/aahmf.notepad/files";
-        File directory = new File(path);
-        File[] files = directory.listFiles();
-       /* for (int i = 0; i < files.length; i++)
-        {
-            Log.d("Files", "FileName:" + files[i].getName());
-        }*/
 
 
-        noteEntryList = new ArrayList<>();
+
+
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         for(int i = 0;i<files.length;i++)
         {
-            noteEntryList.add(new NoteEntry(i,files[i].getName(),R.drawable.noteicon,""));
+            noteEntryList.add(new NoteEntry(i,files[i].getName()));
         }
         adapter = new NoteEntryAdapter(this, noteEntryList);
         recyclerView.setAdapter(adapter);
         kAuth = FirebaseAuth.getInstance();
-
-
-
 
     }
         private void filter(String text){
@@ -139,4 +135,29 @@ public class MainMenuActivity extends AppCompatActivity {
 
         }
 
+    public String findNoteTitle(int pos,List<NoteEntry> list)
+    {
+        String Title;
+        NoteEntry NE = list.get(pos);
+        Title = NE.getTitle();
+        return Title;
+    }
+
+    public String getPath()
+    {
+        return path;
+    }
+
+    public void LoadFiles(String path1,List<NoteEntry> EntryList)
+    {
+         EntryList = new ArrayList<>();
+        File directory1 = new File(path1);
+        File[] list1 = directory1.listFiles();
+
+        for(int i = 0; i< list1.length; i++)
+        {
+            EntryList.add(new NoteEntry(i, list1[i].getName()));
+        }
+
+    }
 }
