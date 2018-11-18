@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewNoteActivity">
+    tools:context=".EditNoteActivity">
 
     <EditText
-        android:id="@+id/etWriteNote"
+        android:id="@+id/etWriteNoteEdit"
         android:layout_width="321dp"
         android:layout_height="285dp"
         android:layout_marginStart="30dp"
@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/btnExport"
+        android:id="@+id/btnExportEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -31,32 +31,32 @@
         android:layout_marginTop="14dp"
         android:text="Export"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etWriteNote" />
+        app:layout_constraintTop_toBottomOf="@+id/etWriteNoteEdit" />
 
     <Button
-        android:id="@+id/btnImport"
+        android:id="@+id/btnImportEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="14dp"
         android:text="Import"
-        app:layout_constraintStart_toEndOf="@+id/btnExport"
-        app:layout_constraintTop_toBottomOf="@+id/etWriteNote" />
+        app:layout_constraintStart_toEndOf="@+id/btnExportEdit"
+        app:layout_constraintTop_toBottomOf="@+id/etWriteNoteEdit" />
 
     <Button
-        android:id="@+id/btnAddImage"
+        android:id="@+id/btnAddImageEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="27dp"
         android:layout_marginLeft="27dp"
         android:layout_marginTop="14dp"
         android:text="Image"
-        app:layout_constraintStart_toEndOf="@+id/btnImport"
-        app:layout_constraintTop_toBottomOf="@+id/etWriteNote" />
+        app:layout_constraintStart_toEndOf="@+id/btnImportEdit"
+        app:layout_constraintTop_toBottomOf="@+id/etWriteNoteEdit" />
 
     <Button
-        android:id="@+id/btnAddFile"
+        android:id="@+id/btnAddFileEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -64,50 +64,53 @@
         android:layout_marginTop="12dp"
         android:text="File"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnExport" />
+        app:layout_constraintTop_toBottomOf="@+id/btnExportEdit" />
 
     <Button
-        android:id="@+id/btnCancelNewNote"
+        android:id="@+id/btnCancelEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="28dp"
         android:layout_marginLeft="28dp"
         android:layout_marginTop="12dp"
         android:text="Cancel"
-        app:layout_constraintStart_toEndOf="@+id/button9"
-        app:layout_constraintTop_toBottomOf="@+id/btnAddImage" />
+        app:layout_constraintStart_toEndOf="@+id/button9Edit"
+        app:layout_constraintTop_toBottomOf="@+id/btnAddImageEdit" />
 
     <Button
-        android:id="@+id/button9"
+        android:id="@+id/button9Edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginStart="29dp"
+        android:layout_marginLeft="29dp"
+        android:layout_marginBottom="8dp"
         android:text="save"
-        app:layout_constraintBottom_toTopOf="@+id/spNoteClr"
-        app:layout_constraintStart_toEndOf="@+id/btnAddFile" />
+        app:layout_constraintBottom_toTopOf="@+id/spNoteClrEdit"
+        app:layout_constraintStart_toEndOf="@+id/btnAddFileEdit" />
 
     <Spinner
-        android:id="@+id/spNoteClr"
-        android:layout_width="203dp"
-        android:layout_height="38dp"
-        android:layout_marginStart="136dp"
-        android:layout_marginLeft="136dp"
-        android:layout_marginTop="5dp"
+        android:id="@+id/spNoteClrEdit"
+        android:layout_width="147dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="164dp"
+        android:layout_marginLeft="164dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnCancelNewNote" />
+        app:layout_constraintTop_toBottomOf="@+id/btnCancelEdit" />
 
     <TextView
-        android:id="@+id/TextPriority"
-        android:layout_width="84dp"
-        android:layout_height="27dp"
-        android:layout_marginStart="51dp"
-        android:layout_marginLeft="51dp"
-        android:layout_marginTop="13dp"
+        android:id="@+id/PriorityTextEdit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="87dp"
+        android:layout_marginLeft="87dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginRight="12dp"
         android:text="Priority :"
         android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/spNoteClrEdit"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnAddFile" />
+        app:layout_constraintTop_toBottomOf="@+id/btnAddFileEdit" />
 
 </android.support.constraint.ConstraintLayout>

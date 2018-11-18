@@ -43,7 +43,8 @@
                 android:value="aahmf.notepad.MainMenuActivity" />
         </activity>
         <activity android:name=".Gallery" />
-        <activity android:name=".ViewNoteActivity"></activity>
+        <activity android:name=".ViewNoteActivity" />
+        <activity android:name=".EditNoteActivity"></activity>
     </application>
 
 </manifest>
