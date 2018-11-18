@@ -4,6 +4,7 @@ package aahmf.notepad;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -101,9 +102,6 @@ public class MainMenuActivity extends AppCompatActivity {
         switch(item.getItemId()){
             case R.id.sign_out:
                 logOut();
-                break;
-            case R.id.settings:
-                startActivity(new Intent(MainMenuActivity.this,SettingsActivity.class));
                 break;
 
             case R.id.newnote:

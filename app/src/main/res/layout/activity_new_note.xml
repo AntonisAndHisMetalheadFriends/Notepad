@@ -62,30 +62,23 @@
         android:layout_marginStart="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="12dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
         android:text="File"
+        app:layout_constraintEnd_toStartOf="@+id/spNoteClr"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnExport" />
-
-    <Button
-        android:id="@+id/btnEditNote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="12dp"
-        android:text="Edit"
-        app:layout_constraintStart_toEndOf="@+id/btnAddFile"
-        app:layout_constraintTop_toBottomOf="@+id/btnImport" />
 
     <Button
         android:id="@+id/btnCancelNewNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="27dp"
-        android:layout_marginLeft="27dp"
         android:layout_marginTop="12dp"
+        android:layout_marginEnd="33dp"
+        android:layout_marginRight="33dp"
         android:text="Cancel"
-        app:layout_constraintStart_toEndOf="@+id/btnEditNote"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/spNoteClr"
         app:layout_constraintTop_toBottomOf="@+id/btnAddImage" />
 
     <Button
@@ -94,9 +87,23 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="148dp"
         android:layout_marginLeft="148dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginBottom="16dp"
         android:text="save"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnEditNote" />
+        app:layout_constraintTop_toBottomOf="@+id/spNoteClr" />
+
+    <Spinner
+        android:id="@+id/spNoteClr"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="393dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/button9"
+        app:layout_constraintEnd_toStartOf="@+id/btnCancelNewNote"
+        app:layout_constraintStart_toEndOf="@+id/btnAddFile"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </android.support.constraint.ConstraintLayout>
