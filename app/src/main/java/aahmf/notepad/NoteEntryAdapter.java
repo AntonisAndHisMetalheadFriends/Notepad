@@ -80,6 +80,15 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
          Button EditNote = itemView.findViewById(R.id.EditButton);
 
 
+         EditNote.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View v) {
+                 main.LoadFiles(path,noteEntryList1);
+                 position = getAdapterPosition();
+                 Title=main.findNoteTitle(position,noteEntryList1);
+                 mCtx.startActivity(new Intent(MainMenuActivity.class.cast(mCtx),EditNoteActivity.class));
+             }
+         });
          cardView.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
