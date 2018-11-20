@@ -158,9 +158,12 @@ public class NewNoteActivity extends AppCompatActivity {
             xmlSerializer.startTag(null,"Text");
             xmlSerializer.text(NoteText);
             xmlSerializer.endTag(null, "Text");
-            xmlSerializer.startTag(null,"Image Paths");
-            xmlSerializer.text(String.valueOf(Gallery.ImagePaths));
-            xmlSerializer.endTag(null,"Image Paths" );
+            for(int i = 0;i<Gallery.ImagePaths.size();i++)
+            {
+                xmlSerializer.startTag(null,"Image"+i);
+                xmlSerializer.text(Gallery.ImagePaths.get(i).toString());
+                xmlSerializer.endTag(null,"Image"+i);
+            }
             xmlSerializer.endTag(null, "userData");
             xmlSerializer.endDocument();
             xmlSerializer.flush();
