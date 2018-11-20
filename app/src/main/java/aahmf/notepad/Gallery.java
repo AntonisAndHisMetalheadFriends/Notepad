@@ -25,7 +25,7 @@ public class Gallery extends AppCompatActivity {
     List<String> imagesEncodedList;
     private GridView gvGallery;
     private GalleryAdapter galleryAdapter;
-    protected static ArrayList ImagePaths;
+    protected static ArrayList<Uri> ImagePaths = new ArrayList<Uri>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -45,7 +45,7 @@ public class Gallery extends AppCompatActivity {
                 Intent intent = new Intent();
                 intent.setType("image/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
+                intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
                 startActivityForResult(Intent.createChooser(intent,"Select Picture"), PICK_IMAGE_MULTIPLE);
             }
         });
@@ -91,7 +91,8 @@ public class Gallery extends AppCompatActivity {
                             .getLayoutParams();
                     mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
 
-                } else {
+                }
+                else {
                     if (data.getClipData() != null) {
                         ClipData mClipData = data.getClipData();
                         ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
@@ -100,6 +101,7 @@ public class Gallery extends AppCompatActivity {
                             ClipData.Item item = mClipData.getItemAt(i);
                             Uri uri = item.getUri();
                             mArrayUri.add(uri);
+
                             // Get the cursor
                             Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
                             // Move to first row
@@ -110,16 +112,19 @@ public class Gallery extends AppCompatActivity {
                             imagesEncodedList.add(imageEncoded);
                             cursor.close();
 
-                            galleryAdapter = new GalleryAdapter(getApplicationContext(),mArrayUri);
+
+
+                        }
+                        for(int y=0;y<mArrayUri.size();y++) {
+                            ImagePaths.add(mArrayUri.get(y));
+                            galleryAdapter = new GalleryAdapter(getApplicationContext(),ImagePaths);
                             gvGallery.setAdapter(galleryAdapter);
                             gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
                             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
                                     .getLayoutParams();
                             mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
-
                         }
-                        ImagePaths= mArrayUri;
-                        Log.v("LOG_TAG", "Selected Images" + mArrayUri.size());
+
                     }
                 }
             } else {
