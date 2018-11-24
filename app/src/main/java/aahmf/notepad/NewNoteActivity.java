@@ -26,7 +26,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.lang.reflect.Array;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class NewNoteActivity extends AppCompatActivity {
 
@@ -41,7 +43,7 @@ public class NewNoteActivity extends AppCompatActivity {
     int bgColor;
     private EditText WriteNote,Title, Keywords;
 
-    private String NoteTitle;
+    private String NoteTitle, Date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +60,8 @@ public class NewNoteActivity extends AppCompatActivity {
         SaveNote = findViewById(R.id.button9);
         WriteNote = findViewById(R.id.etWriteNote);
         Keywords = findViewById(R.id.etKeywords);
-
+        Calendar calendar = Calendar.getInstance();
+        Date = DateFormat.getDateInstance().format(calendar.getTime());
         CancelNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -169,6 +172,9 @@ public class NewNoteActivity extends AppCompatActivity {
             xmlSerializer.startTag(null, "keywords");
             xmlSerializer.text(kwords);
             xmlSerializer.endTag(null, "keywords");
+            xmlSerializer.startTag(null, "Date");
+            xmlSerializer.text(Date);
+            xmlSerializer.endTag(null, "Date");
             xmlSerializer.endTag(null, "userData");
             xmlSerializer.endDocument();
             xmlSerializer.flush();
