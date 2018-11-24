@@ -17,6 +17,14 @@
         android:title= "@string/action_select_notes"
         app:showAsAction="never" />
 
+    <item android:id= "@+id/sortByName"
+        android:title= "Sort by name"
+        app:showAsAction="never" />
+
+    <item android:id= "@+id/sortByPrio"
+        android:title= "Sort by color"
+        app:showAsAction="never" />
+
 
 
 

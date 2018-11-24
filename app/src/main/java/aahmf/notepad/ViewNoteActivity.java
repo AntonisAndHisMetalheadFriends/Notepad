@@ -12,6 +12,8 @@ import android.net.Uri;
 import android.os.Messenger;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -43,7 +45,6 @@ public class ViewNoteActivity extends AppCompatActivity {
     String path = Main.getPath();
     int position;
     int i=0;
-    Button buttonDel;
     private GridView gvGallery;
     private GalleryAdapter galleryAdapter;
     private  ArrayList<Uri> Images = new ArrayList<Uri>();
@@ -57,7 +58,6 @@ public class ViewNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_note);
         NoteText = findViewById(R.id.NoteText);
         TitleText = findViewById(R.id.Title);
-        buttonDel = findViewById(R.id.btnDelete);
         gvGallery = findViewById(R.id.gv);
 
         NoteText.setFocusable(false);
@@ -66,32 +66,6 @@ public class ViewNoteActivity extends AppCompatActivity {
         TitleText.setText(Title);
         loadXML(Title);
 
-
-
-        buttonDel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder1 = new AlertDialog.Builder(ViewNoteActivity.this);
-                builder1.setTitle("Delete note");
-                builder1.setMessage("Are you sure you want to delete this note?");
-                builder1.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        deleteNote(Title);
-                        Toast.makeText(ViewNoteActivity.this,"Note deleted",Toast.LENGTH_LONG).show();
-                        startActivity(new Intent(ViewNoteActivity.this, MainMenuActivity.class));
-                    }
-                });
-                builder1.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                builder1.create();
-                builder1.show();
-            }
-        });
 
     }
     public void loadXML(String file)
@@ -249,4 +223,39 @@ public class ViewNoteActivity extends AppCompatActivity {
             e.printStackTrace();
             }
         }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_two, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.delete_Note:
+                AlertDialog.Builder builder1 = new AlertDialog.Builder(ViewNoteActivity.this);
+                builder1.setTitle("Delete note");
+                builder1.setMessage("Are you sure you want to delete this note?");
+                builder1.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        deleteNote(Title);
+                        Toast.makeText(ViewNoteActivity.this,"Note deleted",Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(ViewNoteActivity.this, MainMenuActivity.class));
+                    }
+                });
+                builder1.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+                builder1.create();
+                builder1.show();
+                break;
+
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }

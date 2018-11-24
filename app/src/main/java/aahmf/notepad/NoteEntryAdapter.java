@@ -51,13 +51,8 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
         NoteEntry noteEntry = noteEntryList1.get(position);
         holder.textView.setText(noteEntry.getTitle());
         SharedPreferences mSharedPref = mCtx.getSharedPreferences("NoteColor", MODE_PRIVATE);
-        //int txtColor =mSharedPref.getInt("Fcolor",mCtx.getResources().getColor(R.color.colorPrimary));
-        //String fontFam = mSharedPref.getString("font_path","fallingSkyOne.otf");
-        //Typeface face = Typeface.createFromAsset(mCtx.getAssets(),fontFam);
         int bgColor =mSharedPref.getInt(noteEntry.getTitle(),mCtx.getResources().getColor(R.color.colorWhite));
         holder.cardView.setCardBackgroundColor(bgColor);
-        //holder.textView.setTextColor(txtColor);
-        //holder.textView.setTypeface(face);
 
     }
 
