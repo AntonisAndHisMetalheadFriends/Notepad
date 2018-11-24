@@ -5,9 +5,11 @@ public class NoteEntry {
     private String title;
 
 
+
     public NoteEntry(int id, String title) {
         this.id = id;
         this.title = title;
+
 
     }
 
@@ -18,5 +20,6 @@ public class NoteEntry {
     public String getTitle() {
         return title;
     }
+
 
 }

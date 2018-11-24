@@ -39,7 +39,7 @@ public class NewNoteActivity extends AppCompatActivity {
     private Spinner noteClr;
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;
-    private EditText WriteNote,Title;
+    private EditText WriteNote,Title, Keywords;
 
     private String NoteTitle;
 
@@ -57,6 +57,7 @@ public class NewNoteActivity extends AppCompatActivity {
 
         SaveNote = findViewById(R.id.button9);
         WriteNote = findViewById(R.id.etWriteNote);
+        Keywords = findViewById(R.id.etKeywords);
 
         CancelNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,6 +149,7 @@ public class NewNoteActivity extends AppCompatActivity {
     public void WriteXml(String xmlFile)
     {
         String NoteText = WriteNote.getText().toString();
+        String kwords = Keywords.getText().toString();
         try {
             FileOutputStream fileos= getApplicationContext().openFileOutput(xmlFile, Context.MODE_PRIVATE);
             XmlSerializer xmlSerializer = Xml.newSerializer();
@@ -164,6 +166,9 @@ public class NewNoteActivity extends AppCompatActivity {
                 xmlSerializer.text(Gallery.ImagePaths.get(i).toString());
                 xmlSerializer.endTag(null,"Image"+i);
             }
+            xmlSerializer.startTag(null, "keywords");
+            xmlSerializer.text(kwords);
+            xmlSerializer.endTag(null, "keywords");
             xmlSerializer.endTag(null, "userData");
             xmlSerializer.endDocument();
             xmlSerializer.flush();
