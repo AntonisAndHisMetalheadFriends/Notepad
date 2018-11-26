@@ -2,7 +2,6 @@ package aahmf.notepad;
 
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -111,8 +110,8 @@ public class MainMenuActivity extends AppCompatActivity {
         ArrayList<NoteEntry> filteredList = new ArrayList<>();
         NoteEntryAdapter NEA = new NoteEntryAdapter(this, filteredList);
         for (NoteEntry noteEntry : noteEntryList) {
-            if (noteEntry.getTheKeywords(MainMenuActivity.this)!=null){
-                keyz =noteEntry.getTheKeywords(MainMenuActivity.this);
+            if (noteEntry.getKwords()!=null){
+                keyz =noteEntry.getKwords();
             }
             else{
                 keyz = "";
@@ -415,16 +414,14 @@ public class MainMenuActivity extends AppCompatActivity {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }}
-}}
-
-
+}
     public void sortByName(boolean desc) {
         if (desc == false) {
             Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
 
                 @Override
                 public int compare(NoteEntry note1, NoteEntry note2) {
-                    return note1.getTitle().compareTo(note2.getTitle());
+                    return note1.getTitle().toUpperCase().compareTo(note2.getTitle().toUpperCase());
                 }
 
             });
@@ -440,30 +437,35 @@ public class MainMenuActivity extends AppCompatActivity {
         }
     }
 
-   public void sortByPriority() {
-            Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
-                @Override
-                public int compare(NoteEntry note1, NoteEntry note2) {
-                    return Integer.compare(note1.getPriority(MainMenuActivity.this),note2.getPriority(MainMenuActivity.this));
-                     }
-                });
+    public void sortByPriority() {
+        Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
+            @Override
+            public int compare(NoteEntry note1, NoteEntry note2) {
+                return Integer.compare(note1.getPriority(MainMenuActivity.this),note2.getPriority(MainMenuActivity.this));
+            }
+        });
     }
 
     public void sortByKeywords() {
         Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
             @Override
             public int compare(NoteEntry note1, NoteEntry note2) {
-                if (note1.getTheKeywords(MainMenuActivity.this) != null && note2.getTheKeywords(MainMenuActivity.this) != null) {
-                    return note1.getTheKeywords(MainMenuActivity.this).compareTo(note2.getTheKeywords(MainMenuActivity.this));
+                if (note1.getKwords() != null && note2.getKwords() != null) {
+                    return note1.getKwords().compareTo(note2.getKwords());
                 }
                 else {
                     return note2.getTitle().compareTo(note1.getTitle());
                 }
-                }
+            }
         });
     }
 
 }
+
+
+
+
+
 
 
 

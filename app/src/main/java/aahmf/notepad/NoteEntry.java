@@ -1,18 +1,9 @@
 package aahmf.notepad;
 
-import android.widget.Button;
-import android.widget.CheckBox;
-
 import android.content.Context;
 import android.content.SharedPreferences;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import android.widget.Button;
+import android.widget.CheckBox;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -25,10 +16,8 @@ public class NoteEntry {
     private Button editButton;
     private String kwords;
     private String date;
-    private String title;
     SharedPreferences mSharedPref;
     private int priorityColor;
-    private String keywords;
 
 
 
@@ -55,32 +44,8 @@ public class NoteEntry {
         return priorityColor;
     }
 
-    public String getTheKeywords(Context ctx)  {
-        try{
-            FileInputStream fis = ctx.openFileInput(title);
-            StringBuilder sb = new StringBuilder();
-            String fileContent;
-            while (fis.available() > 0) {
-                sb.append((char)fis.read());
-            }
-            fileContent = sb.toString();
-            fis.close();
-            int indexStart = fileContent.indexOf("<keywords>") + 10;
-            int indexEnd = fileContent.indexOf("</keywords>");
-            try {
-                this.keywords = fileContent.substring(indexStart,indexEnd);
-            }
-            catch (StringIndexOutOfBoundsException e){
-                e.printStackTrace();
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return this.keywords;
+    public String getKwords()  {
+        return kwords;
     }
 
 
