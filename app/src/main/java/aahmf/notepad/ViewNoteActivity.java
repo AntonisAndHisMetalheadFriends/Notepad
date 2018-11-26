@@ -268,6 +268,7 @@ public class ViewNoteActivity extends AppCompatActivity {
 
             case R.id.PinToStatus:
                 pinToStatusBar();
+                Toast.makeText(this, "Note Pinned Successfully", Toast.LENGTH_SHORT).show();
                 break;
 
         }
