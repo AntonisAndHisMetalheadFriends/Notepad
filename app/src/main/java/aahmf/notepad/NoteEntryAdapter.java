@@ -116,6 +116,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
                  //main.LoadFiles(path,noteEntryList1);
                  position = getAdapterPosition();
                  Title=main.findNoteTitle(position,noteEntryList1);
+                 GalleryEdit.ImagePaths2.clear();
                  mCtx.startActivity(new Intent(MainMenuActivity.class.cast(mCtx),EditNoteActivity.class));
              }
          });

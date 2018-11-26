@@ -105,6 +105,14 @@ public class EditNoteActivity extends AppCompatActivity {
 
 
         });
+        btnImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(EditNoteActivity.this,GalleryEdit.class));
+            }
+
+
+        });
 
 
 
@@ -123,9 +131,26 @@ public class EditNoteActivity extends AppCompatActivity {
             xmlSerializer.startTag(null,"Text");
             xmlSerializer.text(NoteText);
             xmlSerializer.endTag(null, "Text");
-            xmlSerializer.startTag(null,"Image Paths");
-            xmlSerializer.text(String.valueOf(Gallery.ImagePaths));
-            xmlSerializer.endTag(null,"Image Paths" );
+            if(ViewNoteActivity.Images.size()==0)
+            {
+                for(int i = 0; i<GalleryEdit.ImagePaths2.size(); i++)
+                {
+                    xmlSerializer.startTag(null,"Image"+i);
+                    xmlSerializer.text(GalleryEdit.ImagePaths2.get(i).toString());
+                    xmlSerializer.endTag(null,"Image"+i);
+                }
+            }
+            else
+            {
+                for(int i = 0; i<GalleryEdit.ImagePaths2.size(); i++)
+                {
+                    String pp = (GalleryEdit.ImagePaths2.get(i).toString());
+                    xmlSerializer.startTag(null,"Image"+i);
+                    xmlSerializer.text(pp);
+                    xmlSerializer.endTag(null,"Image"+i);
+                }
+            }
+
             xmlSerializer.endTag(null, "userData");
             xmlSerializer.endDocument();
             xmlSerializer.flush();

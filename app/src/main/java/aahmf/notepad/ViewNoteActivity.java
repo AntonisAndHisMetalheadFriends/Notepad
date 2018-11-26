@@ -37,8 +37,9 @@ public class ViewNoteActivity extends AppCompatActivity {
     int i=0;
     private GridView gvGallery;
     private GalleryAdapter galleryAdapter;
-    private  ArrayList<Uri> Images = new ArrayList<Uri>();
-    private static final int PERMISSIONS_REQUEST_READ_MEDIA = 100;
+    protected static ArrayList<Uri> Images = new ArrayList<Uri>();
+    protected static ArrayList<Uri> Images2 = new ArrayList<Uri>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +55,7 @@ public class ViewNoteActivity extends AppCompatActivity {
         NoteText.setClickable(false);
         Title = NoteEntryAdapter.getTitle();
         TitleText.setText(Title);
+        Images.clear();
         loadXML(Title);
 
     }
