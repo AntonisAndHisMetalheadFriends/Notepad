@@ -26,9 +26,8 @@
         android:id="@+id/btnExport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="60dp"
         android:text="Export"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etWriteNote" />
@@ -37,9 +36,8 @@
         android:id="@+id/btnImport"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginTop="60dp"
         android:text="Import"
         app:layout_constraintStart_toEndOf="@+id/btnExport"
         app:layout_constraintTop_toBottomOf="@+id/etWriteNote" />
@@ -48,8 +46,8 @@
         android:id="@+id/btnCancelNewNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="27dp"
-        android:layout_marginTop="14dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="60dp"
         android:text="Cancel"
         app:layout_constraintStart_toEndOf="@+id/btnImport"
         app:layout_constraintTop_toBottomOf="@+id/etWriteNote" />
@@ -59,7 +57,7 @@
         android:layout_width="203dp"
         android:layout_height="38dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="22dp"
         app:layout_constraintStart_toEndOf="@+id/TextPriority"
         app:layout_constraintTop_toBottomOf="@+id/btnCancelNewNote" />
 
@@ -73,5 +71,16 @@
         android:textSize="18sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnExport" />
+
+    <EditText
+        android:id="@+id/etKeywords"
+        android:layout_width="321dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="28dp"
+        android:ems="10"
+        android:hint="Enter Keywords:"
+        android:inputType="text"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etWriteNote" />
 
 </android.support.constraint.ConstraintLayout>

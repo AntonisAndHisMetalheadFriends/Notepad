@@ -10,15 +10,15 @@ public class NoteEntry {
     private CheckBox checkBox;
     private Button editButton;
     private String kwords;
+    private String date;
 
 
 
-    public NoteEntry(int id, String title, String kwords) {
+    public NoteEntry(int id, String title,String date,String kwords) {
         this.id = id;
         this.title = title;
-        this.kwords = kwords;
-
-
+        this.date=date;
+        this.kwords=kwords;
     }
 
     public int getId() {
@@ -30,6 +30,17 @@ public class NoteEntry {
     }
     public String getKwords() { return kwords; }
 
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setKwords(String kwords) {
+        this.kwords = kwords;
+    }
 
     public boolean isSelected() {
         return isSelected;
@@ -53,5 +64,13 @@ public class NoteEntry {
 
     public void setEditButton(Button editButton) {
         this.editButton = editButton;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }
