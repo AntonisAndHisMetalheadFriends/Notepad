@@ -25,6 +25,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.reflect.Array;
+import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class NewNoteActivity extends AppCompatActivity {
 
@@ -34,9 +38,9 @@ public class NewNoteActivity extends AppCompatActivity {
     private Spinner noteClr;
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;
-    private EditText WriteNote,Title;
+    private EditText WriteNote,Title, Keywords;
 
-    private String NoteTitle;
+    private String NoteTitle, Date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +52,9 @@ public class NewNoteActivity extends AppCompatActivity {
         noteClr = findViewById(R.id.spNoteClr);
         noteClr.setPrompt("Priority");
         WriteNote = findViewById(R.id.etWriteNote);
-
+        Keywords = findViewById(R.id.etKeywords);
+        Calendar calendar = Calendar.getInstance();
+        Date = DateFormat.getDateInstance().format(calendar.getTime());
         CancelNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,6 +155,7 @@ public class NewNoteActivity extends AppCompatActivity {
     public void WriteXml(String xmlFile)
     {
         String NoteText = WriteNote.getText().toString();
+        String kwords = Keywords.getText().toString();
         try {
             FileOutputStream fileos= getApplicationContext().openFileOutput(xmlFile, Context.MODE_PRIVATE);
             XmlSerializer xmlSerializer = Xml.newSerializer();
@@ -165,6 +172,12 @@ public class NewNoteActivity extends AppCompatActivity {
                 xmlSerializer.text(Gallery.ImagePaths.get(i).toString());
                 xmlSerializer.endTag(null,"Image"+i);
             }
+            xmlSerializer.startTag(null, "keywords");
+            xmlSerializer.text(kwords);
+            xmlSerializer.endTag(null, "keywords");
+            xmlSerializer.startTag(null, "Date");
+            xmlSerializer.text(Date);
+            xmlSerializer.endTag(null, "Date");
             xmlSerializer.endTag(null, "userData");
             xmlSerializer.endDocument();
             xmlSerializer.flush();

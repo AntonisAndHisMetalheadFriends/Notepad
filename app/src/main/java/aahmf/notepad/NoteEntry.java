@@ -9,11 +9,15 @@ public class NoteEntry {
     private boolean isSelected;
     private CheckBox checkBox;
     private Button editButton;
+    private String kwords;
 
 
-    public NoteEntry(int id, String title) {
+
+    public NoteEntry(int id, String title, String kwords) {
         this.id = id;
         this.title = title;
+        this.kwords = kwords;
+
 
     }
 
@@ -24,6 +28,8 @@ public class NoteEntry {
     public String getTitle() {
         return title;
     }
+    public String getKwords() { return kwords; }
+
 
     public boolean isSelected() {
         return isSelected;
