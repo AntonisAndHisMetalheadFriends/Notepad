@@ -29,6 +29,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
     protected static List<NoteEntry> deleteList1 = new ArrayList<>();
 
     static  String Title;
+    private static int id;
 
     MainMenuActivity main = new MainMenuActivity();
     String path = main.getPath();
@@ -133,8 +134,9 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
                      EditNote.setVisibility(View.INVISIBLE);
                  }
                  else {
-                     //main.LoadFiles(path, noteEntryList1);
                      position = getAdapterPosition();
+                     NoteEntry NE = noteEntryList1.get(position);
+                     id = NE.getId();
                      Title = main.findNoteTitle(position, noteEntryList1);
                      mCtx.startActivity(new Intent(MainMenuActivity.class.cast(mCtx), ViewNoteActivity.class));
                  }
@@ -185,5 +187,9 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
 
     public static String getTitle() {
         return Title;
+    }
+
+    public static int getId() {
+        return id;
     }
 }

@@ -19,8 +19,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\Public\Documents\AndroidProjects\Notepad3\app\src\main\res\drawable\trash-can-icon-28692.png" />
-                                      <entry key="outputName" value="deletenotes" />
+                                      <entry key="imageAsset" value="C:\Users\Public\Documents\AndroidProjects\Notepad3\app\src\main\res\drawable\edit.png" />
+                                      <entry key="outputName" value="edit" />
                                     </map>
                                   </option>
                                 </PersistentState>
