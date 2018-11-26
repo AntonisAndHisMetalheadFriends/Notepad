@@ -261,7 +261,7 @@ public class MainMenuActivity extends AppCompatActivity {
             }
             else {
                 loadXML(list1[i].getName());
-                EntryList.add(new NoteEntry(i, list1[i].getName(), Date, Kwords));
+                EntryList.add(new NoteEntry(i,list1[i].getName(),Date,Kwords));
             }
         }
 

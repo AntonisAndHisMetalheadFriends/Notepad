@@ -3,10 +3,10 @@ package aahmf.notepad;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Xml;
-import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -36,6 +36,7 @@ public class EditNoteActivity extends AppCompatActivity {
     private Spinner noteClr;
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;
+    ArrayList<Uri>Images = new ArrayList<Uri>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,6 +161,7 @@ public class EditNoteActivity extends AppCompatActivity {
 
 
         ArrayList<String> userData = new ArrayList<String>();
+
         try {
             FileInputStream fis = getApplicationContext().openFileInput(file);
             InputStreamReader isr = new InputStreamReader(fis);
@@ -234,6 +236,19 @@ public class EditNoteActivity extends AppCompatActivity {
             }
             else if(eventType == XmlPullParser.TEXT) {
                 userData.add(xpp.getText());
+            }
+            String tagname = xpp.getName();
+            switch (eventType){
+                case XmlPullParser.START_TAG:
+                    for(int i=0;i<=XmlPullParser.END_TAG;i++)
+                    {
+                        if(tagname.equalsIgnoreCase("Image"+i))
+                        {
+                            if(eventType==XmlPullParser.TEXT)
+                            Images.add(Uri.parse(xpp.getText()));
+                        }
+                    }
+                    break;
             }
             try {
                 eventType = xpp.next();

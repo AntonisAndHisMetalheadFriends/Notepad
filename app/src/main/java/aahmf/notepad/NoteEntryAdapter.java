@@ -113,7 +113,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
          EditNote.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View v) {
-                 main.LoadFiles(path,noteEntryList1);
+                 //main.LoadFiles(path,noteEntryList1);
                  position = getAdapterPosition();
                  Title=main.findNoteTitle(position,noteEntryList1);
                  mCtx.startActivity(new Intent(MainMenuActivity.class.cast(mCtx),EditNoteActivity.class));
@@ -132,7 +132,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
                      EditNote.setVisibility(View.INVISIBLE);
                  }
                  else {
-                     main.LoadFiles(path, noteEntryList1);
+                     //main.LoadFiles(path, noteEntryList1);
                      position = getAdapterPosition();
                      Title = main.findNoteTitle(position, noteEntryList1);
                      mCtx.startActivity(new Intent(MainMenuActivity.class.cast(mCtx), ViewNoteActivity.class));

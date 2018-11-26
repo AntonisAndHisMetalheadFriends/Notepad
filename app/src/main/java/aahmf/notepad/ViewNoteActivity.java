@@ -42,8 +42,8 @@ public class ViewNoteActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        getIntent().addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        //getIntent().addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        //Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_note);
         NoteText = findViewById(R.id.NoteText);
@@ -214,7 +214,7 @@ public class ViewNoteActivity extends AppCompatActivity {
         }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_two, menu);
+        getMenuInflater().inflate(R.menu.menu_two,menu);
         return true;
     }
 
