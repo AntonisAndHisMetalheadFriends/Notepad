@@ -1,11 +1,14 @@
 package aahmf.notepad;
 
 import android.app.AlertDialog;
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -39,6 +42,7 @@ public class ViewNoteActivity extends AppCompatActivity {
     private GalleryAdapter galleryAdapter;
     private  ArrayList<Uri> Images = new ArrayList<Uri>();
     private static final int PERMISSIONS_REQUEST_READ_MEDIA = 100;
+    private int id = NoteEntryAdapter.getId();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -198,6 +202,25 @@ public class ViewNoteActivity extends AppCompatActivity {
             NoteText.setText(Text);
         }
 
+        public void pinToStatusBar()
+        {
+            Intent intent = new Intent(this, ViewNoteActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            Notification.Builder NB = new Notification.Builder(this);
+            NB.setContentTitle(Title);
+            NB.setContentText(NoteText.getText().toString());
+            NB.setSmallIcon(R.mipmap.ic_launcher);
+            NB.setPriority(Notification.PRIORITY_MAX);
+            NB.setContentIntent(pendingIntent);
+            NB.setAutoCancel(true);
+            notificationManager.notify(id,NB.build());
+
+
+
+        }
+
         public void deleteNote(String filename) {
         try{
             File dir = new File("/data/user/0/aahmf.notepad/files");
@@ -241,6 +264,10 @@ public class ViewNoteActivity extends AppCompatActivity {
                 });
                 builder1.create();
                 builder1.show();
+                break;
+
+            case R.id.PinToStatus:
+                pinToStatusBar();
                 break;
 
         }
