@@ -21,8 +21,19 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -37,16 +48,18 @@ public class MainMenuActivity extends AppCompatActivity {
     File[] files = directory.listFiles();
     private boolean isSelected = NoteEntryAdapter.getSelected();
     private static Menu men;
+    private String Date,Kwords;
 
 
 
+    boolean desc = false;
+    String keyz;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         EditText editText = findViewById(R.id.edittext);
-
 
 
         editText.addTextChangedListener(new TextWatcher() {
@@ -74,9 +87,17 @@ public class MainMenuActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         for(int i = 0;i<files.length;i++)
         {
-            noteEntryList.add(new NoteEntry(i,files[i].getName()));
+            if(files[i].getName().matches("instant-run"))
+            {
+
+            }
+            else {
+                loadXML(files[i].getName());
+                noteEntryList.add(new NoteEntry(i, files[i].getName(), Date, Kwords));
+            }
         }
         adapter = new NoteEntryAdapter(this, noteEntryList);
         recyclerView.setAdapter(adapter);
@@ -84,11 +105,18 @@ public class MainMenuActivity extends AppCompatActivity {
 
 
     }
-        private void filter(String text){
+
+    private void filter(String text) {
         ArrayList<NoteEntry> filteredList = new ArrayList<>();
-        NoteEntryAdapter NEA = new NoteEntryAdapter(this,filteredList);
-        for(NoteEntry noteEntry : noteEntryList){
-            if(noteEntry.getTitle().toLowerCase().contains(text.toLowerCase())){
+        NoteEntryAdapter NEA = new NoteEntryAdapter(this, filteredList);
+        for (NoteEntry noteEntry : noteEntryList) {
+            if (noteEntry.getKwords()!=null){
+                keyz =noteEntry.getKwords();
+            }
+            else{
+                keyz = "";
+            }
+            if (noteEntry.getTitle().toLowerCase().contains(text.toLowerCase()) || keyz.toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(noteEntry);
             }
         }
@@ -106,10 +134,6 @@ public class MainMenuActivity extends AppCompatActivity {
             return true;
         }
 
-
-
-
-
      @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
@@ -119,6 +143,20 @@ public class MainMenuActivity extends AppCompatActivity {
 
             case R.id.newnote:
                 startActivity(new Intent(MainMenuActivity.this,NewNoteActivity.class));
+                break;
+
+            case R.id.sortByName:
+                sortByName(desc);
+                adapter.notifyDataSetChanged();
+                desc ^= true;
+                break;
+            case R.id.sortByPrio:
+                sortByPriority();
+                adapter.notifyDataSetChanged();
+                break;
+            case R.id.sortByKeywords:
+                sortByKeywords();
+                adapter.notifyDataSetChanged();
                 break;
 
             case R.id.CancelSelection:
@@ -217,8 +255,14 @@ public class MainMenuActivity extends AppCompatActivity {
 
         for(int i = 0; i< list1.length; i++)
         {
-            EntryList.add(new NoteEntry(i, list1[i].getName()));
+            if(files[i].getName().matches("instant-run"))
+            {
 
+            }
+            else {
+                loadXML(list1[i].getName());
+                EntryList.add(new NoteEntry(i, list1[i].getName(), Date, Kwords));
+            }
         }
 
     }
@@ -239,4 +283,189 @@ public class MainMenuActivity extends AppCompatActivity {
     public void setDeleteList(List<NoteEntry> deleteList) {
         this.deleteList = deleteList;
     }
+
+    public void loadXML(String file)
+    {
+
+
+
+        ArrayList<String> userData = new ArrayList<String>();
+        try {
+            FileInputStream fis = getApplicationContext().openFileInput(file);
+            InputStreamReader isr = new InputStreamReader(fis);
+            char[] inputBuffer = new char[fis.available()];
+            isr.read(inputBuffer);
+            String data = new String(inputBuffer);
+            isr.close();
+            fis.close();
+        }
+        catch (FileNotFoundException e3) {
+            // TODO Auto-generated catch block
+            e3.printStackTrace();
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        XmlPullParserFactory factory = null;
+        try {
+            factory = XmlPullParserFactory.newInstance();
+        }
+        catch (XmlPullParserException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+        }
+        factory.setNamespaceAware(true);
+        XmlPullParser xpp = null;
+        try {
+            xpp = factory.newPullParser();
+        }
+        catch (XmlPullParserException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+        }
+        try {
+            FileInputStream fis = getApplicationContext().openFileInput(file);
+            InputStreamReader isr = new InputStreamReader(fis);
+            char[] inputBuffer = new char[fis.available()];
+            isr.read(inputBuffer);
+            String data = new String(inputBuffer);
+            xpp.setInput(new StringReader(data));
+        }
+        catch (FileNotFoundException e3) {
+            // TODO Auto-generated catch block
+            e3.printStackTrace();
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch (XmlPullParserException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        int eventType = 0;
+        try {
+            eventType = xpp.getEventType();
+        }
+        catch (XmlPullParserException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        while (eventType != XmlPullParser.END_DOCUMENT){
+
+            switch (eventType) {
+
+                case XmlPullParser.START_TAG:
+
+                    String tagname = xpp.getName();
+
+
+                    if (tagname.equalsIgnoreCase("Date")) {
+                        try {
+                            eventType = xpp.next();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (XmlPullParserException e) {
+                            e.printStackTrace();
+                        }
+                        Date = xpp.getText();
+
+
+                    }
+
+                    if(tagname.equalsIgnoreCase("keywords"))
+                    {
+                        try {
+                            eventType = xpp.next();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (XmlPullParserException e) {
+                            e.printStackTrace();
+                        }
+                        Kwords = xpp.getText();
+                    }
+
+
+                    break;
+            }
+            if (eventType == XmlPullParser.START_DOCUMENT) {
+                System.out.println("Start document");
+            }
+            else if (eventType == XmlPullParser.START_TAG) {
+                System.out.println("Start tag "+xpp.getName());
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                System.out.println("End tag "+xpp.getName());
+            }
+            else if(eventType == XmlPullParser.TEXT) {
+                userData.add(xpp.getText());
+            }
+
+            try {
+                eventType = xpp.next();
+            }
+            catch (XmlPullParserException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }}
 }
+    public void sortByName(boolean desc) {
+        if (desc == false) {
+            Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
+
+                @Override
+                public int compare(NoteEntry note1, NoteEntry note2) {
+                    return note1.getTitle().toUpperCase().compareTo(note2.getTitle().toUpperCase());
+                }
+
+            });
+        } else {
+            Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
+
+                @Override
+                public int compare(NoteEntry note1, NoteEntry note2) {
+                    return note2.getTitle().compareTo(note1.getTitle());
+                }
+
+            });
+        }
+    }
+
+    public void sortByPriority() {
+        Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
+            @Override
+            public int compare(NoteEntry note1, NoteEntry note2) {
+                return Integer.compare(note1.getPriority(MainMenuActivity.this),note2.getPriority(MainMenuActivity.this));
+            }
+        });
+    }
+
+    public void sortByKeywords() {
+        Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
+            @Override
+            public int compare(NoteEntry note1, NoteEntry note2) {
+                if (note1.getKwords() != null && note2.getKwords() != null) {
+                    return note1.getKwords().compareTo(note2.getKwords());
+                }
+                else {
+                    return note2.getTitle().compareTo(note1.getTitle());
+                }
+            }
+        });
+    }
+
+}
+
+
+
+
+
+
+
+
