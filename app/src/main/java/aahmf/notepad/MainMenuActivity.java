@@ -2,6 +2,7 @@ package aahmf.notepad;
 
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +33,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 
@@ -50,14 +53,14 @@ public class MainMenuActivity extends AppCompatActivity {
 
 
 
+    boolean desc = false;
+    String keyz;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
         EditText editText = findViewById(R.id.edittext);
-
-
 
 
         editText.addTextChangedListener(new TextWatcher() {
@@ -103,11 +106,18 @@ public class MainMenuActivity extends AppCompatActivity {
 
 
     }
-        private void filter(String text){
+
+    private void filter(String text) {
         ArrayList<NoteEntry> filteredList = new ArrayList<>();
-        NoteEntryAdapter NEA = new NoteEntryAdapter(this,filteredList);
-        for(NoteEntry noteEntry : noteEntryList){
-            if(noteEntry.getTitle().toLowerCase().contains(text.toLowerCase())){
+        NoteEntryAdapter NEA = new NoteEntryAdapter(this, filteredList);
+        for (NoteEntry noteEntry : noteEntryList) {
+            if (noteEntry.getTheKeywords(MainMenuActivity.this)!=null){
+                keyz =noteEntry.getTheKeywords(MainMenuActivity.this);
+            }
+            else{
+                keyz = "";
+            }
+            if (noteEntry.getTitle().toLowerCase().contains(text.toLowerCase()) || keyz.toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(noteEntry);
             }
         }
@@ -125,10 +135,6 @@ public class MainMenuActivity extends AppCompatActivity {
             return true;
         }
 
-
-
-
-
      @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
@@ -138,6 +144,20 @@ public class MainMenuActivity extends AppCompatActivity {
 
             case R.id.newnote:
                 startActivity(new Intent(MainMenuActivity.this,NewNoteActivity.class));
+                break;
+
+            case R.id.sortByName:
+                sortByName(desc);
+                adapter.notifyDataSetChanged();
+                desc ^= true;
+                break;
+            case R.id.sortByPrio:
+                sortByPriority();
+                adapter.notifyDataSetChanged();
+                break;
+            case R.id.sortByKeywords:
+                sortByKeywords();
+                adapter.notifyDataSetChanged();
                 break;
 
             case R.id.CancelSelection:
@@ -396,3 +416,54 @@ public class MainMenuActivity extends AppCompatActivity {
                 e.printStackTrace();
             }}
 }}
+
+
+    public void sortByName(boolean desc) {
+        if (desc == false) {
+            Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
+
+                @Override
+                public int compare(NoteEntry note1, NoteEntry note2) {
+                    return note1.getTitle().compareTo(note2.getTitle());
+                }
+
+            });
+        } else {
+            Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
+
+                @Override
+                public int compare(NoteEntry note1, NoteEntry note2) {
+                    return note2.getTitle().compareTo(note1.getTitle());
+                }
+
+            });
+        }
+    }
+
+   public void sortByPriority() {
+            Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
+                @Override
+                public int compare(NoteEntry note1, NoteEntry note2) {
+                    return Integer.compare(note1.getPriority(MainMenuActivity.this),note2.getPriority(MainMenuActivity.this));
+                     }
+                });
+    }
+
+    public void sortByKeywords() {
+        Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
+            @Override
+            public int compare(NoteEntry note1, NoteEntry note2) {
+                if (note1.getTheKeywords(MainMenuActivity.this) != null && note2.getTheKeywords(MainMenuActivity.this) != null) {
+                    return note1.getTheKeywords(MainMenuActivity.this).compareTo(note2.getTheKeywords(MainMenuActivity.this));
+                }
+                else {
+                    return note2.getTitle().compareTo(note1.getTitle());
+                }
+                }
+        });
+    }
+
+}
+
+
+

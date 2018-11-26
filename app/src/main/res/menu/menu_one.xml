@@ -28,10 +28,16 @@
         android:visible="false"
         app:showAsAction="ifRoom" />
 
+    <item android:id= "@+id/sortByName"
+        android:title= "Sort by name"
+        app:showAsAction="never" />
 
+    <item android:id= "@+id/sortByPrio"
+        android:title= "Sort by color"
+        app:showAsAction="never" />
 
-
-
-
+    <item android:id= "@+id/sortByKeywords"
+        android:title= "Sort by Keywords"
+        app:showAsAction="never" />
 
 </menu>

@@ -61,7 +61,6 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
         int bgColor =mSharedPref.getInt(noteEntry.getTitle(),mCtx.getResources().getColor(R.color.colorWhite));
         holder.cardView.setCardBackgroundColor(bgColor);
 
-
     }
 
     @Override
