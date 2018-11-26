@@ -19,8 +19,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="C:\Users\Public\Documents\AndroidProjects\Notepad3\app\src\main\res\drawable\pin.png" />
-                                      <entry key="outputName" value="pin" />
+                                      <entry key="imageAsset" value="C:\Users\Public\Documents\AndroidProjects\Notepad3\app\src\main\res\drawable\edit.png" />
+                                      <entry key="outputName" value="edit" />
                                     </map>
                                   </option>
                                 </PersistentState>

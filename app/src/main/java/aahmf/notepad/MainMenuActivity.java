@@ -1,8 +1,10 @@
 package aahmf.notepad;
 
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -145,7 +147,7 @@ public class MainMenuActivity extends AppCompatActivity {
                 startActivity(new Intent(MainMenuActivity.this,NewNoteActivity.class));
                 break;
 
-            case R.id.sortByName:
+            /*case R.id.sortByName:
                 sortByName(desc);
                 adapter.notifyDataSetChanged();
                 desc ^= true;
@@ -157,6 +159,35 @@ public class MainMenuActivity extends AppCompatActivity {
             case R.id.sortByKeywords:
                 sortByKeywords();
                 adapter.notifyDataSetChanged();
+                break;*/
+
+            case R.id.Sort:
+                final CharSequence[] items = {"By Title","By Priority","By Keywords"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
+                builder.setTitle("Sort Method");
+                builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which)
+                        {
+                            case 0:
+                                sortByName(desc);
+                                adapter.notifyDataSetChanged();
+                                desc ^= true;
+                                break;
+                            case 1:
+                                sortByPriority();
+                                adapter.notifyDataSetChanged();
+                                break;
+                            case 2:
+                                sortByKeywords();
+                                adapter.notifyDataSetChanged();
+                                break;
+                        }
+                    }
+                });
+                builder.create();
+                builder.show();
                 break;
 
             case R.id.CancelSelection:
