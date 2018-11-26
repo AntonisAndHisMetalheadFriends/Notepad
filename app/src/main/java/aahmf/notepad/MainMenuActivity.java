@@ -36,7 +36,7 @@ public class MainMenuActivity extends AppCompatActivity {
     File directory = new File(path);
     File[] files = directory.listFiles();
     boolean desc = false;
-    NoteEntry[] notes;
+    String keyz;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +83,13 @@ public class MainMenuActivity extends AppCompatActivity {
         ArrayList<NoteEntry> filteredList = new ArrayList<>();
         NoteEntryAdapter NEA = new NoteEntryAdapter(this, filteredList);
         for (NoteEntry noteEntry : noteEntryList) {
-            if (noteEntry.getTitle().toLowerCase().contains(text.toLowerCase())) {
+            if (noteEntry.getTheKeywords(MainMenuActivity.this)!=null){
+                keyz =noteEntry.getTheKeywords(MainMenuActivity.this);
+            }
+            else{
+                keyz = "";
+            }
+            if (noteEntry.getTitle().toLowerCase().contains(text.toLowerCase()) || keyz.toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(noteEntry);
             }
         }
@@ -116,6 +122,10 @@ public class MainMenuActivity extends AppCompatActivity {
                 break;
             case R.id.sortByPrio:
                 sortByPriority();
+                adapter.notifyDataSetChanged();
+                break;
+            case R.id.sortByKeywords:
+                sortByKeywords();
                 adapter.notifyDataSetChanged();
                 break;
         }
@@ -195,5 +205,21 @@ public class MainMenuActivity extends AppCompatActivity {
                 });
     }
 
+    public void sortByKeywords() {
+        Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
+            @Override
+            public int compare(NoteEntry note1, NoteEntry note2) {
+                if (note1.getTheKeywords(MainMenuActivity.this) != null && note2.getTheKeywords(MainMenuActivity.this) != null) {
+                    return note1.getTheKeywords(MainMenuActivity.this).compareTo(note2.getTheKeywords(MainMenuActivity.this));
+                }
+                else {
+                    return note2.getTitle().compareTo(note1.getTitle());
+                }
+                }
+        });
+    }
+
 }
+
+
 

@@ -66,7 +66,6 @@ public class ViewNoteActivity extends AppCompatActivity {
         TitleText.setText(Title);
         loadXML(Title);
 
-
     }
     public void loadXML(String file)
     {
