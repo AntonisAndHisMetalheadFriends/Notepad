@@ -1,5 +1,8 @@
 package aahmf.notepad;
 
+import android.widget.Button;
+import android.widget.CheckBox;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -16,6 +19,11 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class NoteEntry {
     private int id;
+    private String title;
+    private boolean isSelected;
+    private CheckBox checkBox;
+    private Button editButton;
+    private String kwords;
     private String title;
     SharedPreferences mSharedPref;
     private int priorityColor;
@@ -75,12 +83,27 @@ public class NoteEntry {
 
 
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public CheckBox getCheckBox() {
+        return checkBox;
+    }
+
+    public void setCheckBox(CheckBox checkBox) {
+        this.checkBox = checkBox;
+    }
+
+    public Button getEditButton() {
+        return editButton;
+    }
+
+    public void setEditButton(Button editButton) {
+        this.editButton = editButton;
+    }
 }
-
-/*line = bufferedReader.readLine()) != null
-
-
-
-
- */
-

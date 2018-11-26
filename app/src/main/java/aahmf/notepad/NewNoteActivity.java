@@ -4,11 +4,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.Environment;
+import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Xml;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -20,7 +21,6 @@ import android.widget.Toast;
 
 import org.xmlpull.v1.XmlSerializer;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -34,10 +34,7 @@ public class NewNoteActivity extends AppCompatActivity {
 
     private Button ExportNote;
     private Button ImportNote;
-    private Button AddImage;
-    private Button AddFile;
     private Button CancelNote;
-    private Button SaveNote;
     private Spinner noteClr;
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;
@@ -51,13 +48,9 @@ public class NewNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_note);
         ExportNote = findViewById(R.id.btnExport);
         ImportNote = findViewById(R.id.btnImport);
-        AddImage = findViewById(R.id.btnAddImage);
-        AddFile = findViewById(R.id.btnAddFile);
         CancelNote = findViewById(R.id.btnCancelNewNote);
         noteClr = findViewById(R.id.spNoteClr);
         noteClr.setPrompt("Priority");
-
-        SaveNote = findViewById(R.id.button9);
         WriteNote = findViewById(R.id.etWriteNote);
         Keywords = findViewById(R.id.etKeywords);
         Calendar calendar = Calendar.getInstance();
@@ -67,51 +60,6 @@ public class NewNoteActivity extends AppCompatActivity {
             public void onClick(View v) {
                 startActivity(new Intent(NewNoteActivity.this, MainMenuActivity.class));
             }
-        });
-
-        AddImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(NewNoteActivity.this, Gallery.class));
-            }
-        });
-
-        SaveNote.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(WriteNote.getText().toString().matches(""))
-                {
-                    Toast.makeText(NewNoteActivity.this,"Write Something Before Saving",Toast.LENGTH_LONG).show();
-                }
-                else{
-                AlertDialog.Builder DialogBuilder = new AlertDialog.Builder(NewNoteActivity.this);
-
-                DialogBuilder.setTitle("Give Note Title");
-
-
-                DialogBuilder.setMessage("Give the note title to the textbox to save the note to your phone");
-                Title = new EditText(NewNoteActivity.this);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
-                        LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.MATCH_PARENT);
-                Title.setLayoutParams(lp);
-                DialogBuilder.setView(Title);
-
-
-                DialogBuilder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        NoteTitle = Title.getText().toString();
-                        WriteXml(NoteTitle);
-                    }
-
-                });
-
-               DialogBuilder.create();
-               DialogBuilder.show();
-
-            }}
         });
 
 
@@ -147,6 +95,61 @@ public class NewNoteActivity extends AppCompatActivity {
                     bgColor = getResources().getColor(R.color.colorWhite);
                 }
             });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_newnote, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.save:
+                if(WriteNote.getText().toString().matches(""))
+                {
+                    Toast.makeText(NewNoteActivity.this,"Write Something Before Saving",Toast.LENGTH_LONG).show();
+                }
+                else{
+                    AlertDialog.Builder DialogBuilder = new AlertDialog.Builder(NewNoteActivity.this);
+
+                    DialogBuilder.setTitle("Give Note Title");
+
+
+                    DialogBuilder.setMessage("Give the note title to the textbox to save the note to your phone");
+                    Title = new EditText(NewNoteActivity.this);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT);
+                    Title.setLayoutParams(lp);
+                    DialogBuilder.setView(Title);
+
+
+                    DialogBuilder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            NoteTitle = Title.getText().toString();
+                            WriteXml(NoteTitle);
+                        }
+
+                    });
+
+                    DialogBuilder.create();
+                    DialogBuilder.show();
+
+                }
+                break;
+
+            case R.id.addfile:
+
+                break;
+            case R.id.image:
+                startActivity(new Intent(NewNoteActivity.this, Gallery.class));
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void WriteXml(String xmlFile)
