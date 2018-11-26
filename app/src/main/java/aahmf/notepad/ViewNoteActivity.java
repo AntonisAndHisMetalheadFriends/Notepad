@@ -40,7 +40,7 @@ public class ViewNoteActivity extends AppCompatActivity {
     int i=0;
     private GridView gvGallery;
     private GalleryAdapter galleryAdapter;
-    private  ArrayList<Uri> Images = new ArrayList<Uri>();
+    protected  static ArrayList<Uri> Images = new ArrayList<Uri>();
     private static final int PERMISSIONS_REQUEST_READ_MEDIA = 100;
     private int id = NoteEntryAdapter.getId();
 
