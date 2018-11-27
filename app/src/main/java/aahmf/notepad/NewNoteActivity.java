@@ -1,10 +1,13 @@
 package aahmf.notepad;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Xml;
@@ -26,7 +29,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class NewNoteActivity extends AppCompatActivity {
 
@@ -40,11 +45,15 @@ public class NewNoteActivity extends AppCompatActivity {
 
 
     private String NoteTitle, Date;
+    private List<Uri> filePaths;
+    private final int File_Request_Code = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_note);
+        filePaths=new ArrayList<>();
+        Gallery.ImagePaths=new ArrayList<>();
         ExportNote = findViewById(R.id.btnExport);
         ImportNote = findViewById(R.id.btnImport);
         CancelNote = findViewById(R.id.btnCancelNewNote);
@@ -132,6 +141,7 @@ public class NewNoteActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             NoteTitle = Title.getText().toString();
                             WriteXml(NoteTitle);
+                            Gallery.ImagePaths=new ArrayList<>();
                         }
 
                     });
@@ -143,7 +153,11 @@ public class NewNoteActivity extends AppCompatActivity {
                 break;
 
             case R.id.addfile:
-
+                Intent intent=new Intent(NewNoteActivity.this,FileGallery.class);
+                for(int z=0;z<filePaths.size();z++){
+                    intent.putExtra("File"+z,filePaths.get(z).toString());
+                }
+                startActivityForResult(intent,File_Request_Code);
                 break;
             case R.id.image:
                 startActivity(new Intent(NewNoteActivity.this, Gallery.class));
@@ -156,8 +170,8 @@ public class NewNoteActivity extends AppCompatActivity {
     public String getDate() {
         return Date;
     }
-    public void WriteXml(String xmlFile)
-    {
+
+    public void WriteXml(String xmlFile) {
         String NoteText = WriteNote.getText().toString();
 
         try {
@@ -175,6 +189,12 @@ public class NewNoteActivity extends AppCompatActivity {
                 xmlSerializer.startTag(null,"Image"+i);
                 xmlSerializer.text(Gallery.ImagePaths.get(i).toString());
                 xmlSerializer.endTag(null,"Image"+i);
+            }
+            for(int i = 0;i<filePaths.size();i++)
+            {
+                xmlSerializer.startTag(null,"File"+i);
+                xmlSerializer.text(filePaths.get(i).toString());
+                xmlSerializer.endTag(null,"File"+i);
             }
             xmlSerializer.startTag(null, "keywords");
             String kwords = Keywords.getText().toString();
@@ -194,7 +214,10 @@ public class NewNoteActivity extends AppCompatActivity {
             mEditor.putInt(xmlFile,bgColor);
             mEditor.apply();
             Toast.makeText(NewNoteActivity.this,"Note Saved In your phone",Toast.LENGTH_LONG).show();
-            startActivity(new Intent(NewNoteActivity.this,MainMenuActivity.class));
+
+            Intent intent=new Intent(NewNoteActivity.this,MainMenuActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
         catch (FileNotFoundException e) {
 
@@ -211,5 +234,26 @@ public class NewNoteActivity extends AppCompatActivity {
 
             e.printStackTrace();
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == File_Request_Code) {
+            if (resultCode == Activity.RESULT_OK && data!=null) {
+                int z=0;
+                Uri temp;
+                Bundle extras=data.getExtras();
+                if(extras!=null){
+                    while (extras.containsKey("File"+z)){
+                        temp=Uri.parse(extras.getString("File"+z));
+                        if(!filePaths.contains(temp)){
+                            filePaths.add(temp);
+                        }
+                        z=z+1;
+                    }
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

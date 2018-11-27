@@ -72,7 +72,8 @@ public class GalleryEdit extends AppCompatActivity {
         Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(GalleryEdit.this, EditNoteActivity.class));
+                finish();
+                //startActivity(new Intent(GalleryEdit.this, EditNoteActivity.class));
             }
         });
         gvGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
