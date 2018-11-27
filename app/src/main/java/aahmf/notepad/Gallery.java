@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Gallery extends AppCompatActivity {
+
     private Button btn, Back;
     int PICK_IMAGE_MULTIPLE = 1;
     String imageEncoded;
@@ -35,7 +36,8 @@ public class Gallery extends AppCompatActivity {
     private ArrayList<Integer> mSelected = new ArrayList<>();
     private static final String TAG = "Gallery";
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
@@ -44,7 +46,6 @@ public class Gallery extends AppCompatActivity {
 
         gvGallery = (GridView) findViewById(R.id.gv);
 
-        
 
         for (int y = 0; y < ImagePaths.size(); y++) {
             galleryAdapter = new GalleryAdapter(getApplicationContext(), ImagePaths);
@@ -69,6 +70,20 @@ public class Gallery extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(Gallery.this, NewNoteActivity.class));
+            }
+        });
+
+
+
+        gvGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            Uri abc = null;
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position,long id) {
+                // TODO Auto-generated method stub
+
+                Intent intent =new Intent(getApplicationContext(),FullScreenActivity.class);
+                intent.setData(ImagePaths.get(position));
+                startActivity(intent);
             }
         });
 
@@ -156,12 +171,5 @@ public class Gallery extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
     }
-    private GridView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
-        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-            Log.d(TAG,"Position Clicked ["+position+"] with item id ["+ImagePaths.get(position)+"]");
-
-        }
-    };
-
 
 }
