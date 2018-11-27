@@ -48,6 +48,9 @@
             android:name=".Gallery"
             android:grantUriPermissions="true" />
         <activity
+            android:name=".FileGallery"
+            android:grantUriPermissions="true" />
+        <activity
             android:name=".ViewNoteActivity"
             android:grantUriPermissions="true" />
         <activity

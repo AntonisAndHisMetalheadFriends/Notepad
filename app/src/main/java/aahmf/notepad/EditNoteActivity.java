@@ -1,10 +1,12 @@
 package aahmf.notepad;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Xml;
 import android.view.View;
@@ -30,13 +32,14 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 
 public class EditNoteActivity extends AppCompatActivity {
+    private final int File_Request_Code=2;
     private static String Title;
     private EditText WriteNote;
     private Button btnSave,btnImport,btnExport,btnCancel,btnImage,btnFile;
     private Spinner noteClr;
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;
-    ArrayList<Uri>Images = new ArrayList<Uri>();
+    ArrayList<Uri>Images = new ArrayList<Uri>(),filesUris= new ArrayList<Uri>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,13 +116,23 @@ public class EditNoteActivity extends AppCompatActivity {
 
 
         });
+        btnFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(EditNoteActivity.this,FileGallery.class);
+                for(int z=0;z<filesUris.size();z++){
+                    intent.putExtra("File"+z,filesUris.get(z).toString());
+                }
+                startActivityForResult(intent,File_Request_Code);
+            }
 
+
+        });
 
 
     }
 
-    public void WriteXml(String xmlFile)
-    {
+    public void WriteXml(String xmlFile) {
         String NoteText = WriteNote.getText().toString();
         try {
             FileOutputStream fileos= getApplicationContext().openFileOutput(xmlFile, Context.MODE_PRIVATE);
@@ -151,6 +164,13 @@ public class EditNoteActivity extends AppCompatActivity {
                 }
             }
 
+            for(int i = 0; i<filesUris.size(); i++) {
+                String pp = (filesUris.get(i).toString());
+                xmlSerializer.startTag(null,"File"+i);
+                xmlSerializer.text(pp);
+                xmlSerializer.endTag(null,"File"+i);
+            }
+
             xmlSerializer.endTag(null, "userData");
             xmlSerializer.endDocument();
             xmlSerializer.flush();
@@ -162,7 +182,9 @@ public class EditNoteActivity extends AppCompatActivity {
             mEditor.putInt(xmlFile,bgColor);
             mEditor.apply();
             Toast.makeText(EditNoteActivity.this,"Note Saved In your phone",Toast.LENGTH_LONG).show();
-            startActivity(new Intent(EditNoteActivity.this,MainMenuActivity.class));
+            Intent intent=new Intent(EditNoteActivity.this,MainMenuActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
         catch (FileNotFoundException e) {
 
@@ -181,10 +203,7 @@ public class EditNoteActivity extends AppCompatActivity {
         }
     }
 
-    public void loadXML(String file)
-    {
-
-
+    public void loadXML(String file){
         ArrayList<String> userData = new ArrayList<String>();
 
         try {
@@ -270,7 +289,10 @@ public class EditNoteActivity extends AppCompatActivity {
                         if(tagname.equalsIgnoreCase("Image"+i))
                         {
                             if(eventType==XmlPullParser.TEXT)
-                            Images.add(Uri.parse(xpp.getText()));
+                                Images.add(Uri.parse(xpp.getText()));
+                        }else if(tagname.equalsIgnoreCase("File"+i)){
+                            if(eventType==XmlPullParser.TEXT)
+                                filesUris.add(Uri.parse(xpp.getText()));
                         }
                     }
                     break;
@@ -290,5 +312,26 @@ public class EditNoteActivity extends AppCompatActivity {
         String Text = userData.get(0);
         //String password = userData.get(1);
         WriteNote.setText(Text);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == File_Request_Code) {
+            if (resultCode == Activity.RESULT_OK && data!=null) {
+                int z=0;
+                Uri temp;
+                Bundle extras=data.getExtras();
+                if(extras!=null){
+                    while (extras.containsKey("File"+z)){
+                        temp=Uri.parse(extras.getString("File"+z));
+                        if(!filesUris.contains(temp)){
+                            filesUris.add(temp);
+                        }
+                        z=z+1;
+                    }
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
