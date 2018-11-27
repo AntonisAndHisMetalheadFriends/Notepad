@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ public class GalleryEdit extends AppCompatActivity {
         btn = findViewById(R.id.btn);
         Back = findViewById(R.id.svb);
         gvGallery = (GridView)findViewById(R.id.gv);
+
 
 
 
@@ -71,6 +73,17 @@ public class GalleryEdit extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(GalleryEdit.this, EditNoteActivity.class));
+            }
+        });
+        gvGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            Uri abc = null;
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position,long id) {
+                // TODO Auto-generated method stub
+
+                Intent intent =new Intent(getApplicationContext(),FullScreenActivity.class);
+                intent.setData(ImagePaths2.get(position));
+                startActivity(intent);
             }
         });
     }
