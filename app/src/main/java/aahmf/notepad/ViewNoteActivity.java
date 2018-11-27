@@ -9,7 +9,9 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -57,6 +59,17 @@ public class ViewNoteActivity extends AppCompatActivity {
         TitleText.setText(Title);
         Images.clear();
         loadXML(Title);
+        gvGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            Uri abc = null;
+            @Override
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+                // TODO Auto-generated method stub
+
+                Intent intent =new Intent(getApplicationContext(),FullScreenActivity.class);
+                intent.setData(Images.get(position));
+                startActivity(intent);
+            }
+        });
 
     }
     public void loadXML(String file)
