@@ -175,7 +175,8 @@ public class ViewNoteActivity extends AppCompatActivity {
                             mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
                             i++;
                             //}
-                        }else if (tagname.equalsIgnoreCase("File" + i)) {
+                        }
+                        if (tagname.equalsIgnoreCase("File" + i)) {
                             try {
                                 eventType = xpp.next();
                             } catch (IOException e) {
