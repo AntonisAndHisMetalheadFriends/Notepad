@@ -216,13 +216,8 @@ public class MainMenuActivity extends AppCompatActivity {
         return Title;
     }
 
-    public CheckBox SetCheckBoxtrue(int pos,List<NoteEntry> list,CheckBox box,boolean selected)
+    public void SetCheckBoxtrue(boolean selected)
     {
-        NoteEntry NE = list.get(pos);
-        NE.setCheckBox(box);
-        box = NE.getCheckBox();
-        box.setVisibility(View.VISIBLE);
-        box.setChecked(true);
         if(selected==true)
         {
             setItemVisible(men,R.id.CancelSelection,true);
@@ -235,7 +230,7 @@ public class MainMenuActivity extends AppCompatActivity {
         }
 
 
-        return box;
+
     }
 
 
