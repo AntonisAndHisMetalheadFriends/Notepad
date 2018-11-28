@@ -40,9 +40,11 @@ public class ViewNoteActivity extends AppCompatActivity {
     String path = Main.getPath();
     int position;
     int i=0;
-    private GridView gvGallery;
+    private GridView gvGallery,gvfGallery;
     private GalleryAdapter galleryAdapter;
+    private FileGalleryAdapter fileGalleryAdapter;
     protected  static ArrayList<Uri> Images = new ArrayList<Uri>();
+    protected ArrayList<Uri>filesUris = new ArrayList<Uri>();
     private static final int PERMISSIONS_REQUEST_READ_MEDIA = 100;
     private int id = NoteEntryAdapter.getId();
 
@@ -55,6 +57,7 @@ public class ViewNoteActivity extends AppCompatActivity {
         NoteText = findViewById(R.id.NoteText);
         TitleText = findViewById(R.id.Title);
         gvGallery = findViewById(R.id.gv);
+        gvfGallery = findViewById(R.id.gvf);
 
         NoteText.setFocusable(false);
         NoteText.setClickable(false);
@@ -75,10 +78,8 @@ public class ViewNoteActivity extends AppCompatActivity {
         });
 
     }
-    public void loadXML(String file)
-    {
 
-
+    public void loadXML(String file) {
 
             ArrayList<String> userData = new ArrayList<String>();
             try {
@@ -153,7 +154,33 @@ public class ViewNoteActivity extends AppCompatActivity {
                         String tagname = xpp.getName();
 
 
-                        if (tagname.equalsIgnoreCase("Image" + i)) {
+                        //if (tagname.equalsIgnoreCase("Image" + i)) {
+                        if (tagname.contains("Image")) {
+                                try {
+                                    eventType = xpp.next();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (XmlPullParserException e) {
+                                    e.printStackTrace();
+                                }
+                                //eventType=XmlPullParser.TEXT;
+                                // if (eventType == XmlPullParser.TEXT)
+
+                                Images.add(Uri.parse(xpp.getText()));
+
+                                galleryAdapter = new GalleryAdapter(getApplicationContext(), Images);
+                                gvGallery.setAdapter(galleryAdapter);
+                                gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
+                                ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
+                                        .getLayoutParams();
+                                mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
+                                i++;
+                                //}
+                            }
+
+                        //if (tagname.equalsIgnoreCase("File" + i)) {
+
+                        if (tagname.contains("File")) {
                             try {
                                 eventType = xpp.next();
                             } catch (IOException e) {
@@ -164,14 +191,14 @@ public class ViewNoteActivity extends AppCompatActivity {
                             //eventType=XmlPullParser.TEXT;
                             // if (eventType == XmlPullParser.TEXT)
 
-                            Images.add(Uri.parse(xpp.getText()));
+                            filesUris.add(Uri.parse(xpp.getText()));
 
-                            galleryAdapter = new GalleryAdapter(getApplicationContext(), Images);
-                            gvGallery.setAdapter(galleryAdapter);
-                            gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
-                            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
+                            fileGalleryAdapter = new FileGalleryAdapter(getApplicationContext(), filesUris);
+                            gvfGallery.setAdapter(fileGalleryAdapter);
+                            gvfGallery.setVerticalSpacing(gvfGallery.getHorizontalSpacing());
+                            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvfGallery
                                     .getLayoutParams();
-                            mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
+                            mlp.setMargins(0, gvfGallery.getHorizontalSpacing(), 0, 0);
                             i++;
                             //}
                         }

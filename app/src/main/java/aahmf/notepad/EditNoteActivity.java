@@ -1,13 +1,16 @@
 package aahmf.notepad;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Xml;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -30,13 +33,14 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 
 public class EditNoteActivity extends AppCompatActivity {
+    private final int File_Request_Code=2;
     private static String Title;
     private EditText WriteNote;
     private Button btnSave,btnImport,btnExport,btnCancel,btnImage,btnFile;
     private Spinner noteClr;
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;
-    ArrayList<Uri>Images = new ArrayList<Uri>();
+    ArrayList<Uri>Images = new ArrayList<Uri>(),filesUris= new ArrayList<Uri>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,13 +117,23 @@ public class EditNoteActivity extends AppCompatActivity {
 
 
         });
+        btnFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent=new Intent(EditNoteActivity.this,FileGallery.class);
+                for(int z=0;z<filesUris.size();z++){
+                    intent.putExtra("File"+z,filesUris.get(z).toString());
+                }
+                startActivityForResult(intent,File_Request_Code);
+            }
 
+
+        });
 
 
     }
 
-    public void WriteXml(String xmlFile)
-    {
+    public void WriteXml(String xmlFile) {
         String NoteText = WriteNote.getText().toString();
         try {
             FileOutputStream fileos= getApplicationContext().openFileOutput(xmlFile, Context.MODE_PRIVATE);
@@ -131,24 +145,51 @@ public class EditNoteActivity extends AppCompatActivity {
             xmlSerializer.startTag(null,"Text");
             xmlSerializer.text(NoteText);
             xmlSerializer.endTag(null, "Text");
-            if(ViewNoteActivity.Images.size()==0)
+            if(GalleryEdit.ImagePaths2.size()==0)
             {
-                for(int i = 0; i<GalleryEdit.ImagePaths2.size(); i++)
+                if(ViewNoteActivity.Images.size()==0)
                 {
-                    xmlSerializer.startTag(null,"Image"+i);
-                    xmlSerializer.text(GalleryEdit.ImagePaths2.get(i).toString());
-                    xmlSerializer.endTag(null,"Image"+i);
+                    for(int i = 0; i<ViewNoteActivity.Images.size(); i++)
+                    {
+                        xmlSerializer.startTag(null,"Image"+i);
+                        xmlSerializer.text(ViewNoteActivity.Images.get(i).toString());
+                        xmlSerializer.endTag(null,"Image"+i);
+                    }
+                }
+                else
+                {
+                    for(int i = 0; i<ViewNoteActivity.Images.size(); i++)
+                    {
+                        String pp = (ViewNoteActivity.Images.get(i).toString());
+                        xmlSerializer.startTag(null,"Image"+i);
+                        xmlSerializer.text(pp);
+                        xmlSerializer.endTag(null,"Image"+i);
+                    }
+                }
+
+            }
+            else {
+                if (ViewNoteActivity.Images.size() == 0) {
+                    for (int i = 0; i < GalleryEdit.ImagePaths2.size(); i++) {
+                        xmlSerializer.startTag(null, "Image" + i);
+                        xmlSerializer.text(GalleryEdit.ImagePaths2.get(i).toString());
+                        xmlSerializer.endTag(null, "Image" + i);
+                    }
+                } else {
+                    for (int i = 0; i < GalleryEdit.ImagePaths2.size(); i++) {
+                        String pp = (GalleryEdit.ImagePaths2.get(i).toString());
+                        xmlSerializer.startTag(null, "Image" + i);
+                        xmlSerializer.text(pp);
+                        xmlSerializer.endTag(null, "Image" + i);
+                    }
                 }
             }
-            else
-            {
-                for(int i = 0; i<GalleryEdit.ImagePaths2.size(); i++)
-                {
-                    String pp = (GalleryEdit.ImagePaths2.get(i).toString());
-                    xmlSerializer.startTag(null,"Image"+i);
-                    xmlSerializer.text(pp);
-                    xmlSerializer.endTag(null,"Image"+i);
-                }
+
+            for(int i = 0; i<filesUris.size(); i++) {
+                String pp = (filesUris.get(i).toString());
+                xmlSerializer.startTag(null,"File"+i);
+                xmlSerializer.text(pp);
+                xmlSerializer.endTag(null,"File"+i);
             }
 
             xmlSerializer.endTag(null, "userData");
@@ -162,7 +203,9 @@ public class EditNoteActivity extends AppCompatActivity {
             mEditor.putInt(xmlFile,bgColor);
             mEditor.apply();
             Toast.makeText(EditNoteActivity.this,"Note Saved In your phone",Toast.LENGTH_LONG).show();
-            startActivity(new Intent(EditNoteActivity.this,MainMenuActivity.class));
+            Intent intent=new Intent(EditNoteActivity.this,MainMenuActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
         }
         catch (FileNotFoundException e) {
 
@@ -181,12 +224,9 @@ public class EditNoteActivity extends AppCompatActivity {
         }
     }
 
-    public void loadXML(String file)
-    {
-
+    public void loadXML(String file) {
 
         ArrayList<String> userData = new ArrayList<String>();
-
         try {
             FileInputStream fis = getApplicationContext().openFileInput(file);
             InputStreamReader isr = new InputStreamReader(fis);
@@ -249,7 +289,51 @@ public class EditNoteActivity extends AppCompatActivity {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
+
         while (eventType != XmlPullParser.END_DOCUMENT){
+
+            switch (eventType) {
+
+                case XmlPullParser.START_TAG:
+
+                    String tagname = xpp.getName();
+
+
+                    //if (tagname.equalsIgnoreCase("Image" + i)) {
+                    if (tagname.contains("Image")) {
+                        try {
+                            eventType = xpp.next();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (XmlPullParserException e) {
+                            e.printStackTrace();
+                        }
+                        //eventType=XmlPullParser.TEXT;
+                        // if (eventType == XmlPullParser.TEXT)
+
+                        Images.add(Uri.parse(xpp.getText()));
+                    }
+
+                    //if (tagname.equalsIgnoreCase("File" + i)) {
+
+                    if (tagname.contains("File")) {
+                        try {
+                            eventType = xpp.next();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (XmlPullParserException e) {
+                            e.printStackTrace();
+                        }
+                        //eventType=XmlPullParser.TEXT;
+                        // if (eventType == XmlPullParser.TEXT)
+
+                        filesUris.add(Uri.parse(xpp.getText()));
+                        //}
+                    }
+
+
+                    break;
+            }
             if (eventType == XmlPullParser.START_DOCUMENT) {
                 System.out.println("Start document");
             }
@@ -262,19 +346,7 @@ public class EditNoteActivity extends AppCompatActivity {
             else if(eventType == XmlPullParser.TEXT) {
                 userData.add(xpp.getText());
             }
-            String tagname = xpp.getName();
-            switch (eventType){
-                case XmlPullParser.START_TAG:
-                    for(int i=0;i<=XmlPullParser.END_TAG;i++)
-                    {
-                        if(tagname.equalsIgnoreCase("Image"+i))
-                        {
-                            if(eventType==XmlPullParser.TEXT)
-                            Images.add(Uri.parse(xpp.getText()));
-                        }
-                    }
-                    break;
-            }
+
             try {
                 eventType = xpp.next();
             }
@@ -285,10 +357,38 @@ public class EditNoteActivity extends AppCompatActivity {
             catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }
-        }
+            }}
+
+
+
+
+
+
+
+
         String Text = userData.get(0);
         //String password = userData.get(1);
         WriteNote.setText(Text);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == File_Request_Code) {
+            if (resultCode == Activity.RESULT_OK && data!=null) {
+                int z=0;
+                Uri temp;
+                Bundle extras=data.getExtras();
+                if(extras!=null){
+                    while (extras.containsKey("File"+z)){
+                        temp=Uri.parse(extras.getString("File"+z));
+                        if(!filesUris.contains(temp)){
+                            filesUris.add(temp);
+                        }
+                        z=z+1;
+                    }
+                }
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

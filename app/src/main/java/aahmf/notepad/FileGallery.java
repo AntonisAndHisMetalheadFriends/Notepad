@@ -1,54 +1,59 @@
 package aahmf.notepad;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.Uri;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Gallery extends AppCompatActivity {
-
+public class FileGallery extends AppCompatActivity {
+    private static final String TAG = "FileGallery";
+    protected ArrayList<Uri> FilePaths = new ArrayList<Uri>();
     private Button btn, Back;
-    int PICK_IMAGE_MULTIPLE = 1;
-    String imageEncoded;
-    List<String> imagesEncodedList;
     private GridView gvGallery;
-    private GalleryAdapter galleryAdapter;
-    protected static ArrayList<Uri> ImagePaths = new ArrayList<Uri>();
+    private FileGalleryAdapter galleryAdapter;
     private ArrayList<Integer> mSelected = new ArrayList<>();
-    private static final String TAG = "Gallery";
+    int PICK_FILE_MULTIPLE = 2;
+    String FileEncoded;
+    List<String> fileEncodedList;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_gallery);
+        setContentView(R.layout.activity_file_gallery);
 
         btn = findViewById(R.id.btn);
         Back = findViewById(R.id.svb);
 
         gvGallery = (GridView) findViewById(R.id.gv);
+        Bundle extras=getIntent().getExtras();
+        if(extras!=null){
+            int z=0;
+            Uri temp;
+            while (extras.containsKey("File"+z)){
+                temp=Uri.parse(extras.getString("File"+z));
+                if(!FilePaths.contains(temp)){
+                    FilePaths.add(temp);
+                }
+                z=z+1;
+            }
+        }
 
-
-        for (int y = 0; y < ImagePaths.size(); y++) {
-            galleryAdapter = new GalleryAdapter(getApplicationContext(), ImagePaths);
+        for (int y = 0; y < FilePaths.size(); y++) {
+            galleryAdapter = new FileGalleryAdapter(getApplicationContext(), FilePaths);
             gvGallery.setAdapter(galleryAdapter);
             gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
@@ -60,66 +65,54 @@ public class Gallery extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.setType("image/*");
+                intent.setType("*/*");
                 intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
                 intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_MULTIPLE);
+                startActivityForResult(Intent.createChooser(intent, "Select a File"), PICK_FILE_MULTIPLE);
             }
         });
         Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent resultIntent = new Intent();
+                for(int z=0;z<FilePaths.size();z++){
+                    resultIntent.putExtra("File"+z,FilePaths.get(z).toString());
+                }
+                setResult(Activity.RESULT_OK, resultIntent);
                 finish();
-                //startActivity(new Intent(Gallery.this, NewNoteActivity.class));
-            }
-        });
-
-
-
-        gvGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            Uri abc = null;
-            @Override
-            public void onItemClick(AdapterView<?> parent, View v, int position,long id) {
-                // TODO Auto-generated method stub
-
-                Intent intent =new Intent(getApplicationContext(),FullScreenActivity.class);
-                intent.setData(ImagePaths.get(position));
-                startActivity(intent);
             }
         });
 
     }
 
-
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
-            // When an Image is picked
-            if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == RESULT_OK
+            // When an File is picked
+            if (requestCode == PICK_FILE_MULTIPLE && resultCode == RESULT_OK
                     && null != data) {
-                // Get the Image from data
-                Uri mImageUri;
-                String[] filePathColumn = {MediaStore.Images.Media.DATA};
-                imagesEncodedList = new ArrayList<String>();
+                // Get the File from data
+                Uri mFileUri;
+                String[] filePathColumn = {MediaStore.Files.FileColumns.DATA};
+                fileEncodedList = new ArrayList<String>();
                 if (data.getData() != null) {
 
-                    mImageUri = data.getData();
+                    mFileUri = data.getData();
 
                     // Get the cursor
-                    Cursor cursor = getContentResolver().query(mImageUri,
+                    Cursor cursor = getContentResolver().query(mFileUri,
                             filePathColumn, null, null, null);
                     // Move to first row
                     cursor.moveToFirst();
 
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    imageEncoded = cursor.getString(columnIndex);
+                    FileEncoded = cursor.getString(columnIndex);
                     cursor.close();
 
-
-                    ImagePaths.add(mImageUri);
-                    galleryAdapter = new GalleryAdapter(getApplicationContext(), ImagePaths);
+                    if(!FilePaths.contains(mFileUri)){
+                        FilePaths.add(mFileUri);
+                    }
+                    galleryAdapter = new FileGalleryAdapter(getApplicationContext(), FilePaths);
                     gvGallery.setAdapter(galleryAdapter);
                     gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
                     ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
@@ -142,15 +135,17 @@ public class Gallery extends AppCompatActivity {
                             cursor.moveToFirst();
 
                             int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                            imageEncoded = cursor.getString(columnIndex);
-                            imagesEncodedList.add(imageEncoded);
+                            FileEncoded = cursor.getString(columnIndex);
+                            fileEncodedList.add(FileEncoded);
                             cursor.close();
 
 
                         }
                         for (int y = 0; y < mArrayUri.size(); y++) {
-                            ImagePaths.add(mArrayUri.get(y));
-                            galleryAdapter = new GalleryAdapter(getApplicationContext(), ImagePaths);
+                            if(!FilePaths.contains(mArrayUri.get(y))){
+                                FilePaths.add(mArrayUri.get(y));
+                            }
+                            galleryAdapter = new FileGalleryAdapter(getApplicationContext(), FilePaths);
                             gvGallery.setAdapter(galleryAdapter);
                             gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
                             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
@@ -161,7 +156,7 @@ public class Gallery extends AppCompatActivity {
                     }
                 }
             } else {
-                Toast.makeText(this, "You haven't picked Image",
+                Toast.makeText(this, "You haven't picked any files",
                         Toast.LENGTH_LONG).show();
             }
         } catch (Exception e) {
@@ -173,4 +168,21 @@ public class Gallery extends AppCompatActivity {
 
     }
 
+    private GridView.OnItemClickListener itemClickListener = new AdapterView.OnItemClickListener() {
+        public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+            Log.d(TAG,"Position Clicked ["+position+"] with item id ["+FilePaths.get(position)+"]");
+
+        }
+    };
+
+
+    @Override
+    protected void onDestroy() {
+        Intent resultIntent = new Intent();
+        for(int z=0;z<FilePaths.size();z++){
+            resultIntent.putExtra("File"+z,FilePaths.get(z).toString());
+        }
+        setResult(Activity.RESULT_OK, resultIntent);
+        super.onDestroy();
+    }
 }
