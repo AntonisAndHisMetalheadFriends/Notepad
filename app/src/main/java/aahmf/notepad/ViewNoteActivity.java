@@ -154,29 +154,33 @@ public class ViewNoteActivity extends AppCompatActivity {
                         String tagname = xpp.getName();
 
 
-                        if (tagname.equalsIgnoreCase("Image" + i)) {
-                            try {
-                                eventType = xpp.next();
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            } catch (XmlPullParserException e) {
-                                e.printStackTrace();
+                        //if (tagname.equalsIgnoreCase("Image" + i)) {
+                        if (tagname.contains("Image")) {
+                                try {
+                                    eventType = xpp.next();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (XmlPullParserException e) {
+                                    e.printStackTrace();
+                                }
+                                //eventType=XmlPullParser.TEXT;
+                                // if (eventType == XmlPullParser.TEXT)
+
+                                Images.add(Uri.parse(xpp.getText()));
+
+                                galleryAdapter = new GalleryAdapter(getApplicationContext(), Images);
+                                gvGallery.setAdapter(galleryAdapter);
+                                gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
+                                ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
+                                        .getLayoutParams();
+                                mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
+                                i++;
+                                //}
                             }
-                            //eventType=XmlPullParser.TEXT;
-                            // if (eventType == XmlPullParser.TEXT)
 
-                            Images.add(Uri.parse(xpp.getText()));
+                        //if (tagname.equalsIgnoreCase("File" + i)) {
 
-                            galleryAdapter = new GalleryAdapter(getApplicationContext(), Images);
-                            gvGallery.setAdapter(galleryAdapter);
-                            gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
-                            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
-                                    .getLayoutParams();
-                            mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
-                            i++;
-                            //}
-                        }
-                        if (tagname.equalsIgnoreCase("File" + i)) {
+                        if (tagname.contains("File")) {
                             try {
                                 eventType = xpp.next();
                             } catch (IOException e) {

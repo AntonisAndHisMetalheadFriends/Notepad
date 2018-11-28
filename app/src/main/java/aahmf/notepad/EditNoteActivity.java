@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Xml;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -203,9 +204,9 @@ public class EditNoteActivity extends AppCompatActivity {
         }
     }
 
-    public void loadXML(String file){
-        ArrayList<String> userData = new ArrayList<String>();
+    public void loadXML(String file) {
 
+        ArrayList<String> userData = new ArrayList<String>();
         try {
             FileInputStream fis = getApplicationContext().openFileInput(file);
             InputStreamReader isr = new InputStreamReader(fis);
@@ -268,7 +269,51 @@ public class EditNoteActivity extends AppCompatActivity {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
+
         while (eventType != XmlPullParser.END_DOCUMENT){
+
+            switch (eventType) {
+
+                case XmlPullParser.START_TAG:
+
+                    String tagname = xpp.getName();
+
+
+                    //if (tagname.equalsIgnoreCase("Image" + i)) {
+                    if (tagname.contains("Image")) {
+                        try {
+                            eventType = xpp.next();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (XmlPullParserException e) {
+                            e.printStackTrace();
+                        }
+                        //eventType=XmlPullParser.TEXT;
+                        // if (eventType == XmlPullParser.TEXT)
+
+                        Images.add(Uri.parse(xpp.getText()));
+                    }
+
+                    //if (tagname.equalsIgnoreCase("File" + i)) {
+
+                    if (tagname.contains("File")) {
+                        try {
+                            eventType = xpp.next();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (XmlPullParserException e) {
+                            e.printStackTrace();
+                        }
+                        //eventType=XmlPullParser.TEXT;
+                        // if (eventType == XmlPullParser.TEXT)
+
+                        filesUris.add(Uri.parse(xpp.getText()));
+                        //}
+                    }
+
+
+                    break;
+            }
             if (eventType == XmlPullParser.START_DOCUMENT) {
                 System.out.println("Start document");
             }
@@ -281,22 +326,7 @@ public class EditNoteActivity extends AppCompatActivity {
             else if(eventType == XmlPullParser.TEXT) {
                 userData.add(xpp.getText());
             }
-            String tagname = xpp.getName();
-            switch (eventType){
-                case XmlPullParser.START_TAG:
-                    for(int i=0;i<=XmlPullParser.END_TAG;i++)
-                    {
-                        if(tagname.equalsIgnoreCase("Image"+i))
-                        {
-                            if(eventType==XmlPullParser.TEXT)
-                                Images.add(Uri.parse(xpp.getText()));
-                        }else if(tagname.equalsIgnoreCase("File"+i)){
-                            if(eventType==XmlPullParser.TEXT)
-                                filesUris.add(Uri.parse(xpp.getText()));
-                        }
-                    }
-                    break;
-            }
+
             try {
                 eventType = xpp.next();
             }
@@ -307,8 +337,15 @@ public class EditNoteActivity extends AppCompatActivity {
             catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
-            }
-        }
+            }}
+
+
+
+
+
+
+
+
         String Text = userData.get(0);
         //String password = userData.get(1);
         WriteNote.setText(Text);
