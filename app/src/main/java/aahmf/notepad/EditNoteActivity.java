@@ -145,23 +145,43 @@ public class EditNoteActivity extends AppCompatActivity {
             xmlSerializer.startTag(null,"Text");
             xmlSerializer.text(NoteText);
             xmlSerializer.endTag(null, "Text");
-            if(ViewNoteActivity.Images.size()==0)
+            if(GalleryEdit.ImagePaths2.size()==0)
             {
-                for(int i = 0; i<GalleryEdit.ImagePaths2.size(); i++)
+                if(ViewNoteActivity.Images.size()==0)
                 {
-                    xmlSerializer.startTag(null,"Image"+i);
-                    xmlSerializer.text(GalleryEdit.ImagePaths2.get(i).toString());
-                    xmlSerializer.endTag(null,"Image"+i);
+                    for(int i = 0; i<ViewNoteActivity.Images.size(); i++)
+                    {
+                        xmlSerializer.startTag(null,"Image"+i);
+                        xmlSerializer.text(ViewNoteActivity.Images.get(i).toString());
+                        xmlSerializer.endTag(null,"Image"+i);
+                    }
                 }
-            }
-            else
-            {
-                for(int i = 0; i<GalleryEdit.ImagePaths2.size(); i++)
+                else
                 {
-                    String pp = (GalleryEdit.ImagePaths2.get(i).toString());
-                    xmlSerializer.startTag(null,"Image"+i);
-                    xmlSerializer.text(pp);
-                    xmlSerializer.endTag(null,"Image"+i);
+                    for(int i = 0; i<ViewNoteActivity.Images.size(); i++)
+                    {
+                        String pp = (ViewNoteActivity.Images.get(i).toString());
+                        xmlSerializer.startTag(null,"Image"+i);
+                        xmlSerializer.text(pp);
+                        xmlSerializer.endTag(null,"Image"+i);
+                    }
+                }
+
+            }
+            else {
+                if (ViewNoteActivity.Images.size() == 0) {
+                    for (int i = 0; i < GalleryEdit.ImagePaths2.size(); i++) {
+                        xmlSerializer.startTag(null, "Image" + i);
+                        xmlSerializer.text(GalleryEdit.ImagePaths2.get(i).toString());
+                        xmlSerializer.endTag(null, "Image" + i);
+                    }
+                } else {
+                    for (int i = 0; i < GalleryEdit.ImagePaths2.size(); i++) {
+                        String pp = (GalleryEdit.ImagePaths2.get(i).toString());
+                        xmlSerializer.startTag(null, "Image" + i);
+                        xmlSerializer.text(pp);
+                        xmlSerializer.endTag(null, "Image" + i);
+                    }
                 }
             }
 
