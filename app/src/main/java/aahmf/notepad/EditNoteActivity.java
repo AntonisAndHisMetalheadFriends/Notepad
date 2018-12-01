@@ -57,7 +57,7 @@ public class EditNoteActivity extends AppCompatActivity {
         noteClr.setPrompt("Priority");
 
         Title=NoteEntryAdapter.getTitle();
-
+        GalleryEdit.ImagePaths3.clear();
         loadXML(Title);
 
 
