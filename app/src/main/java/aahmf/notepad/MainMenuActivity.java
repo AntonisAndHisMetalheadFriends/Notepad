@@ -147,20 +147,6 @@ public class MainMenuActivity extends AppCompatActivity {
                 startActivity(new Intent(MainMenuActivity.this,NewNoteActivity.class));
                 break;
 
-            /*case R.id.sortByName:
-                sortByName(desc);
-                adapter.notifyDataSetChanged();
-                desc ^= true;
-                break;
-            case R.id.sortByPrio:
-                sortByPriority();
-                adapter.notifyDataSetChanged();
-                break;
-            case R.id.sortByKeywords:
-                sortByKeywords();
-                adapter.notifyDataSetChanged();
-                break;*/
-
             case R.id.Sort:
                 final CharSequence[] items = {"By Title","By Priority","By Keywords"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
@@ -216,13 +202,8 @@ public class MainMenuActivity extends AppCompatActivity {
         return Title;
     }
 
-    public CheckBox SetCheckBoxtrue(int pos,List<NoteEntry> list,CheckBox box,boolean selected)
+    public void SetCheckBoxtrue(boolean selected)
     {
-        NoteEntry NE = list.get(pos);
-        NE.setCheckBox(box);
-        box = NE.getCheckBox();
-        box.setVisibility(View.VISIBLE);
-        box.setChecked(true);
         if(selected==true)
         {
             setItemVisible(men,R.id.CancelSelection,true);
@@ -235,7 +216,7 @@ public class MainMenuActivity extends AppCompatActivity {
         }
 
 
-        return box;
+
     }
 
 
@@ -276,26 +257,6 @@ public class MainMenuActivity extends AppCompatActivity {
     public String getPath()
     {
         return path;
-    }
-
-    public void LoadFiles(String path1,List<NoteEntry> EntryList)
-    {
-         EntryList = new ArrayList<>();
-        File directory1 = new File(path1);
-        File[] list1 = directory1.listFiles();
-
-        for(int i = 0; i< list1.length; i++)
-        {
-            if(files[i].getName().matches("instant-run"))
-            {
-
-            }
-            else {
-                loadXML(list1[i].getName());
-                EntryList.add(new NoteEntry(i,list1[i].getName(),Date,Kwords));
-            }
-        }
-
     }
 
     public void setIconOnOverflowMenu(Menu men,int menuit,int labelid,int icon)

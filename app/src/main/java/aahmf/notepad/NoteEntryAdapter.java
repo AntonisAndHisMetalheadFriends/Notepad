@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
     private List<NoteEntry> noteEntryList1;
     private static boolean isSelected=false;
     protected static List<NoteEntry> deleteList1 = new ArrayList<>();
+    private static String date,keywords;
 
     static  String Title;
     private static int id;
@@ -50,17 +52,30 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
 
 
 
+
+
     @Override
     public void onBindViewHolder(NoteEntryViewHolder holder, int position) {
-        NoteEntry noteEntry = noteEntryList1.get(position);
+        final NoteEntry noteEntry = noteEntryList1.get(position);
         holder.Keywords.setText(noteEntry.getKwords());
         holder.Date.setText(noteEntry.getDate());
         holder.textView.setText(noteEntry.getTitle());
         noteEntry.setCheckBox(holder.selectedNote);
+        holder.selectedNote=noteEntry.getCheckBox();
+        holder.selectedNote.setOnCheckedChangeListener(null);
+        holder.selectedNote.setChecked(noteEntry.isSelected());
+        holder.selectedNote.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                noteEntry.setSelected(isChecked);
+            }
+        });
         noteEntry.setEditButton(holder.EditNote);
         SharedPreferences mSharedPref = mCtx.getSharedPreferences("NoteColor", MODE_PRIVATE);
         int bgColor =mSharedPref.getInt(noteEntry.getTitle(),mCtx.getResources().getColor(R.color.colorWhite));
         holder.cardView.setCardBackgroundColor(bgColor);
+
+
 
     }
 
@@ -100,6 +115,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
 
 
 
+
                      selectedNote.setChecked(false);
                      selectedNote.setVisibility(View.INVISIBLE);
                      EditNote.setVisibility(View.VISIBLE);
@@ -116,6 +132,9 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
              public void onClick(View v) {
                  //main.LoadFiles(path,noteEntryList1);
                  position = getAdapterPosition();
+                 NoteEntry NE = noteEntryList1.get(position);
+                 date = NE.getDate();
+                 keywords = NE.getKwords();
                  Title=main.findNoteTitle(position,noteEntryList1);
                  GalleryEdit.ImagePaths2.clear();
                  mCtx.startActivity(new Intent(MainMenuActivity.class.cast(mCtx),EditNoteActivity.class));
@@ -130,7 +149,9 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
                      NoteEntry NE = noteEntryList1.get(position);
                      deleteList1.add(NE);
                      main1.setDeleteList(deleteList1);
-                     main.SetCheckBoxtrue(position, noteEntryList1, selectedNote, isSelected);
+                     main.SetCheckBoxtrue(isSelected);
+                     selectedNote.setChecked(true);
+                     selectedNote.setVisibility(View.VISIBLE);
                      EditNote.setVisibility(View.INVISIBLE);
                  }
                  else {
@@ -158,7 +179,9 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
                  deleteList1.add(NE);
                  main1.setDeleteList(deleteList1);
                      isSelected = true;
-                     main.SetCheckBoxtrue(position, noteEntryList1, selectedNote, isSelected);
+                     selectedNote.setChecked(true);
+                     selectedNote.setVisibility(View.VISIBLE);
+                     main.SetCheckBoxtrue(isSelected);
                      EditNote.setVisibility(View.INVISIBLE);
                      return true;
              }
@@ -191,5 +214,21 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
 
     public static int getId() {
         return id;
+    }
+
+    public static String getDate() {
+        return date;
+    }
+
+    public static void setDate(String date) {
+        NoteEntryAdapter.date = date;
+    }
+
+    public static String getKeywords() {
+        return keywords;
+    }
+
+    public static void setKeywords(String keywords) {
+        NoteEntryAdapter.keywords = keywords;
     }
 }
