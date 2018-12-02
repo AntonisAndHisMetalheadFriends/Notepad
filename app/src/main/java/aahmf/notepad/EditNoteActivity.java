@@ -10,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Xml;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -40,6 +39,7 @@ public class EditNoteActivity extends AppCompatActivity {
     private Spinner noteClr;
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;
+    private String date,keywords;
     ArrayList<Uri>Images = new ArrayList<Uri>(),filesUris= new ArrayList<Uri>();
 
     @Override
@@ -55,6 +55,8 @@ public class EditNoteActivity extends AppCompatActivity {
         WriteNote = findViewById(R.id.etWriteNoteEdit);
         noteClr = findViewById(R.id.spNoteClrEdit);
         noteClr.setPrompt("Priority");
+        date=NoteEntryAdapter.getDate();
+        keywords = NoteEntryAdapter.getKeywords();
 
         Title=NoteEntryAdapter.getTitle();
         GalleryEdit.ImagePaths3.clear();
@@ -191,7 +193,12 @@ public class EditNoteActivity extends AppCompatActivity {
                 xmlSerializer.text(pp);
                 xmlSerializer.endTag(null,"File"+i);
             }
-
+            xmlSerializer.startTag(null, "keywords");
+            xmlSerializer.text(keywords);
+            xmlSerializer.endTag(null, "keywords");
+            xmlSerializer.startTag(null, "Date");
+            xmlSerializer.text(date);
+            xmlSerializer.endTag(null, "Date");
             xmlSerializer.endTag(null, "userData");
             xmlSerializer.endDocument();
             xmlSerializer.flush();

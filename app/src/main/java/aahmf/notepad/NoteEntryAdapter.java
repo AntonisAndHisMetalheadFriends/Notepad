@@ -28,6 +28,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
     private List<NoteEntry> noteEntryList1;
     private static boolean isSelected=false;
     protected static List<NoteEntry> deleteList1 = new ArrayList<>();
+    private static String date,keywords;
 
     static  String Title;
     private static int id;
@@ -131,6 +132,9 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
              public void onClick(View v) {
                  //main.LoadFiles(path,noteEntryList1);
                  position = getAdapterPosition();
+                 NoteEntry NE = noteEntryList1.get(position);
+                 date = NE.getDate();
+                 keywords = NE.getKwords();
                  Title=main.findNoteTitle(position,noteEntryList1);
                  GalleryEdit.ImagePaths2.clear();
                  mCtx.startActivity(new Intent(MainMenuActivity.class.cast(mCtx),EditNoteActivity.class));
@@ -210,5 +214,21 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
 
     public static int getId() {
         return id;
+    }
+
+    public static String getDate() {
+        return date;
+    }
+
+    public static void setDate(String date) {
+        NoteEntryAdapter.date = date;
+    }
+
+    public static String getKeywords() {
+        return keywords;
+    }
+
+    public static void setKeywords(String keywords) {
+        NoteEntryAdapter.keywords = keywords;
     }
 }

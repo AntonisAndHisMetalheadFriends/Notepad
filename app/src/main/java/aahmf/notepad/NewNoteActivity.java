@@ -22,6 +22,10 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.FileNotFoundException;
@@ -48,6 +52,9 @@ public class NewNoteActivity extends AppCompatActivity {
     private List<Uri> filePaths;
     private final int File_Request_Code = 2;
 
+    private DatabaseReference mNotes = FirebaseDatabase.getInstance().getReference("Notes");
+    private FirebaseUser user = LogInActivity.getUser();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +70,9 @@ public class NewNoteActivity extends AppCompatActivity {
         Keywords = findViewById(R.id.etKeywords);
         Calendar calendar = Calendar.getInstance();
         Date = DateFormat.getDateInstance().format(calendar.getTime());
+
+        
+
 
 
         CancelNote.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +132,7 @@ public class NewNoteActivity extends AppCompatActivity {
                     Toast.makeText(NewNoteActivity.this,"Write Something Before Saving",Toast.LENGTH_LONG).show();
                 }
                 else{
+                    //OFFLINE===================================================================================================
                     AlertDialog.Builder DialogBuilder = new AlertDialog.Builder(NewNoteActivity.this);
 
                     DialogBuilder.setTitle("Give Note Title");
@@ -141,6 +152,31 @@ public class NewNoteActivity extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int which) {
                             NoteTitle = Title.getText().toString();
                             WriteXml(NoteTitle);
+                            //ONLLINE=======================================================================
+                            //primary key
+                            DatabaseReference key = mNotes.child(NoteTitle);
+                            DatabaseReference Images = key.child("Images");
+                            DatabaseReference Files = key.child("Files");
+                            DatabaseReference Kwords = key.child("Keywords");
+                            DatabaseReference NoteDate = key.child("DateOfCreation");
+                            DatabaseReference Content = key.child("Content");
+                            DatabaseReference priority = key.child("Priority");
+                            DatabaseReference userid = key.child("UserId");
+
+                            Kwords.setValue(Keywords.getText().toString());
+                            NoteDate.setValue(Date);
+                            Content.setValue(WriteNote.getText().toString());
+                            priority.setValue(bgColor);
+                            userid.setValue(user.getUid());
+                            for(int i = 0;i<Gallery.ImagePaths.size();i++)
+                            {
+                                Images.setValue(Gallery.ImagePaths.get(i).toString());
+                            }
+                            for(int i = 0;i<filePaths.size();i++)
+                            {
+                                Files.setValue(filePaths.get(i).toString());
+                            }
+                            //==============================================================================
                             Gallery.ImagePaths=new ArrayList<>();
                         }
 
@@ -148,6 +184,7 @@ public class NewNoteActivity extends AppCompatActivity {
 
                     DialogBuilder.create();
                     DialogBuilder.show();
+                    //==================================================================================
 
                 }
                 break;
