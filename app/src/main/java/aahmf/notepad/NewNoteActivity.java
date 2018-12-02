@@ -71,7 +71,7 @@ public class NewNoteActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         Date = DateFormat.getDateInstance().format(calendar.getTime());
 
-        
+
 
 
 
@@ -170,11 +170,11 @@ public class NewNoteActivity extends AppCompatActivity {
                             userid.setValue(user.getUid());
                             for(int i = 0;i<Gallery.ImagePaths.size();i++)
                             {
-                                Images.setValue(Gallery.ImagePaths.get(i).toString());
+                                Images.child("Image "+i).setValue(Gallery.ImagePaths.get(i).toString());
                             }
                             for(int i = 0;i<filePaths.size();i++)
                             {
-                                Files.setValue(filePaths.get(i).toString());
+                                Files.child("File "+i).setValue(filePaths.get(i).toString());
                             }
                             //==============================================================================
                             Gallery.ImagePaths=new ArrayList<>();
