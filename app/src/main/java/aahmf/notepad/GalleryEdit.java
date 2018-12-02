@@ -25,6 +25,7 @@ public class GalleryEdit extends AppCompatActivity {
     private GridView gvGallery;
     private GalleryAdapter galleryAdapter;
     protected static ArrayList<Uri> ImagePaths2 = new ArrayList<Uri>();
+    protected static ArrayList<Uri> ImagePaths3 = new ArrayList<Uri>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -34,27 +35,36 @@ public class GalleryEdit extends AppCompatActivity {
         btn = findViewById(R.id.btn);
         Back = findViewById(R.id.svb);
         gvGallery = (GridView)findViewById(R.id.gv);
+        ImagePaths2.clear();
 
-
-
-
-        for(int y = 0; y<ViewNoteActivity.Images.size(); y++)
+    if (ImagePaths3.size()!=0)
+    {
+        for (int y = 0; y < ImagePaths3.size(); y++)
         {
-            ImagePaths2.add(ViewNoteActivity.Images.get(y));
+            ImagePaths2.add(ImagePaths3.get(y));
 
-            galleryAdapter = new GalleryAdapter(getApplicationContext(),ImagePaths2);
+            galleryAdapter = new GalleryAdapter(getApplicationContext(), ImagePaths2);
             gvGallery.setAdapter(galleryAdapter);
             gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
             ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
                     .getLayoutParams();
             mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
         }
+    }
+    else
+    {
+        for (int y = 0; y < ViewNoteActivity.Images.size(); y++)
+        {
+            ImagePaths2.add(ViewNoteActivity.Images.get(y));
 
-
-
-
-
-
+            galleryAdapter = new GalleryAdapter(getApplicationContext(), ImagePaths2);
+            gvGallery.setAdapter(galleryAdapter);
+            gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
+            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
+                    .getLayoutParams();
+            mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
+        }
+    }
 
 
 
@@ -72,6 +82,11 @@ public class GalleryEdit extends AppCompatActivity {
         Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                for(int z = 0; z<ImagePaths2.size();z++)
+                {
+                    ImagePaths3.add(ImagePaths2.get(z));
+                }
+
                 finish();
                 //startActivity(new Intent(GalleryEdit.this, EditNoteActivity.class));
             }
