@@ -33,10 +33,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Date;
 
 
 public class MainMenuActivity extends AppCompatActivity {
@@ -118,7 +122,8 @@ public class MainMenuActivity extends AppCompatActivity {
             else{
                 keyz = "";
             }
-            if (noteEntry.getTitle().toLowerCase().contains(text.toLowerCase()) || keyz.toLowerCase().contains(text.toLowerCase())) {
+            if (noteEntry.getTitle().toLowerCase().contains(text.toLowerCase()) || keyz.toLowerCase().contains(text.toLowerCase())
+                    ||noteEntry.getDate().toLowerCase().contains(text.toLowerCase())) {
                 filteredList.add(noteEntry);
             }
         }
@@ -148,7 +153,7 @@ public class MainMenuActivity extends AppCompatActivity {
                 break;
 
             case R.id.Sort:
-                final CharSequence[] items = {"By Title","By Priority","By Keywords"};
+                final CharSequence[] items = {"By Title","By Priority","By Keywords","By Date"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
                 builder.setTitle("Sort Method");
                 builder.setSingleChoiceItems(items, -1, new DialogInterface.OnClickListener() {
@@ -167,6 +172,10 @@ public class MainMenuActivity extends AppCompatActivity {
                                 break;
                             case 2:
                                 sortByKeywords();
+                                adapter.notifyDataSetChanged();
+                                break;
+                            case 3:
+                                sortByDate();
                                 adapter.notifyDataSetChanged();
                                 break;
                         }
@@ -444,6 +453,28 @@ public class MainMenuActivity extends AppCompatActivity {
             public int compare(NoteEntry note1, NoteEntry note2) {
                 if (note1.getKwords() != null && note2.getKwords() != null) {
                     return note1.getKwords().compareTo(note2.getKwords());
+                }
+                else {
+                    return note2.getTitle().compareTo(note1.getTitle());
+                }
+            }
+        });
+    }
+
+    public void sortByDate() {
+        Collections.sort(noteEntryList, new Comparator<NoteEntry>() {
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+            Date date1,date2;
+            @Override
+            public int compare(NoteEntry note1, NoteEntry note2) {
+                if (note1.getDate() != null && note2.getDate() != null) {
+                    try {
+                        date1 = df.parse(note1.getDate());
+                        date2 = df.parse(note2.getDate());
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    return date2.compareTo(date1);
                 }
                 else {
                     return note2.getTitle().compareTo(note1.getTitle());

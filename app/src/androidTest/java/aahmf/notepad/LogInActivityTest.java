@@ -1,6 +1,7 @@
 package aahmf.notepad;
 
 import android.support.test.espresso.Espresso;
+import android.support.test.rule.ActivityTestRule;
 ///import android.support.test.rule.ActivityTestRule;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -20,12 +21,12 @@ import static org.junit.Assert.assertNotNull;
 public class LogInActivityTest {
 
     @Rule
-    //public ActivityTestRule<LogInActivity> mActivityTestRule = new ActivityTestRule<LogInActivity>(LogInActivity.class);
+    public ActivityTestRule<LogInActivity> mActivityTestRule = new ActivityTestRule<LogInActivity>(LogInActivity.class);
     private LogInActivity mActivity = null;
 
     @Before
     public void setUp() throws Exception {
-       // mActivity = mActivityTestRule.getActivity();
+        mActivity = mActivityTestRule.getActivity();
     }
 
 
