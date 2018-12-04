@@ -33,9 +33,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import static android.view.View.generateViewId;
 
 public class NewNoteActivity extends AppCompatActivity {
 
@@ -69,7 +72,8 @@ public class NewNoteActivity extends AppCompatActivity {
         WriteNote = findViewById(R.id.etWriteNote);
         Keywords = findViewById(R.id.etKeywords);
         Calendar calendar = Calendar.getInstance();
-        Date = DateFormat.getDateInstance().format(calendar.getTime());
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        Date = df.format(calendar.getTime());
 
 
 
@@ -140,6 +144,7 @@ public class NewNoteActivity extends AppCompatActivity {
 
                     DialogBuilder.setMessage("Give the note title to the textbox to save the note to your phone");
                     Title = new EditText(NewNoteActivity.this);
+                    Title.setId(R.integer.title_id);
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.MATCH_PARENT);
