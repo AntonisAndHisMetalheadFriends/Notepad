@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -23,8 +24,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 
 import org.xmlpull.v1.XmlSerializer;
 
@@ -38,8 +44,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-import static android.view.View.generateViewId;
-
 public class NewNoteActivity extends AppCompatActivity {
 
     private Button ExportNote;
@@ -49,6 +53,7 @@ public class NewNoteActivity extends AppCompatActivity {
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;
     private EditText WriteNote,Title, Keywords;
+    private  int id=1;
 
 
     private String NoteTitle, Date;
@@ -74,6 +79,7 @@ public class NewNoteActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         Date = df.format(calendar.getTime());
+        incrementCounter();
 
 
 
@@ -159,7 +165,10 @@ public class NewNoteActivity extends AppCompatActivity {
                             WriteXml(NoteTitle);
                             //ONLLINE=======================================================================
                             //primary key
-                            DatabaseReference key = mNotes.child(NoteTitle);
+
+
+                            DatabaseReference key = mNotes.child(String.valueOf(id));
+                            DatabaseReference title = key.child("NoteTitle");
                             DatabaseReference Images = key.child("Images");
                             DatabaseReference Files = key.child("Files");
                             DatabaseReference Kwords = key.child("Keywords");
@@ -173,6 +182,7 @@ public class NewNoteActivity extends AppCompatActivity {
                             Content.setValue(WriteNote.getText().toString());
                             priority.setValue(bgColor);
                             userid.setValue(user.getUid());
+                            title.setValue(NoteTitle);
                             for(int i = 0;i<Gallery.ImagePaths.size();i++)
                             {
                                 Images.child("Image "+i).setValue(Gallery.ImagePaths.get(i).toString());
@@ -181,6 +191,7 @@ public class NewNoteActivity extends AppCompatActivity {
                             {
                                 Files.child("File "+i).setValue(filePaths.get(i).toString());
                             }
+
                             //==============================================================================
                             Gallery.ImagePaths=new ArrayList<>();
                         }
@@ -297,5 +308,30 @@ public class NewNoteActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void incrementCounter() {
+
+        mNotes.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int size = (int) dataSnapshot.getChildrenCount();
+                for(int i =1;i<=size;i++)
+                {
+
+                    if(dataSnapshot.hasChild(String.valueOf(i)))
+                    {
+                        id++;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
     }
 }
