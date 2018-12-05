@@ -4,6 +4,7 @@ package aahmf.notepad;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,6 +23,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -56,6 +64,9 @@ public class MainMenuActivity extends AppCompatActivity {
     private static Menu men;
     private String Date,Kwords;
 
+    private DatabaseReference mNotes = FirebaseDatabase.getInstance().getReference("Notes");
+    private FirebaseUser user = LogInActivity.getUser();
+
 
 
     boolean desc = false;
@@ -65,6 +76,7 @@ public class MainMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        GetOnlineNotes(user.getUid());
         EditText editText = findViewById(R.id.edittext);
 
 
@@ -77,12 +89,14 @@ public class MainMenuActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
+
             }
 
             @Override
             public void afterTextChanged(Editable s) {
-                filter(s.toString());
-            }
+                //filter(s.toString());
+
+        }
         });
 
 
@@ -94,7 +108,7 @@ public class MainMenuActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        for(int i = 0;i<files.length;i++)
+        /*for(int i = 0;i<files.length;i++)
         {
             if(files[i].getName().matches("instant-run"))
             {
@@ -104,7 +118,9 @@ public class MainMenuActivity extends AppCompatActivity {
                 loadXML(files[i].getName());
                 noteEntryList.add(new NoteEntry(i, files[i].getName(), Date, Kwords));
             }
-        }
+        }*/
+
+
         adapter = new NoteEntryAdapter(this, noteEntryList);
         recyclerView.setAdapter(adapter);
         kAuth = FirebaseAuth.getInstance();
@@ -481,6 +497,68 @@ public class MainMenuActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void GetOnlineNotes(final String uid)
+    {
+
+        mNotes.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                 Query query = mNotes.orderByChild("UserId").equalTo(uid);
+
+                    query.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                            int counter = (int)dataSnapshot.getChildrenCount();
+                            int y=1;
+                            int found=0;
+                            if(dataSnapshot.exists())
+                            {
+
+                                    while (found!=counter) {
+
+                                        if(dataSnapshot.hasChild(String.valueOf(y))) {
+                                            Date = dataSnapshot.child(String.valueOf(y)).child("DateOfCreation").getValue().toString();
+                                            Kwords = dataSnapshot.child(String.valueOf(y)).child("Keywords").getValue().toString();
+                                            String Title = dataSnapshot.child(String.valueOf(y)).child("NoteTitle").getValue().toString();
+                                            noteEntryList.add(new NoteEntry(y, Title, Date, Kwords));
+                                            y++;
+                                            found++;
+
+                                        }
+                                        else
+                                        {
+                                            y++;
+                                        }
+                                    }
+
+
+
+                            }
+                            //Toast.makeText(MainMenuActivity.this,"Den Mphke Sthn IF",Toast.LENGTH_LONG).show();
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                        }
+                    });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    @Override
+    protected void onStart() {
+        super.onStart();
+        GetOnlineNotes(user.getUid());
     }
 
 }
