@@ -32,7 +32,7 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText Email;
     private EditText Pass;
     private EditText Retype;
-    private TextView Cancel;
+    private Button Cancel;
     private Button Rgstr;
     private ProgressBar progressBar;
 

@@ -73,7 +73,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
         noteEntry.setEditButton(holder.EditNote);
         SharedPreferences mSharedPref = mCtx.getSharedPreferences("NoteColor", MODE_PRIVATE);
         int bgColor =mSharedPref.getInt(noteEntry.getTitle(),mCtx.getResources().getColor(R.color.colorWhite));
-        holder.cardView.setCardBackgroundColor(bgColor);
+        holder.Color.setBackgroundColor(bgColor);
 
 
 
@@ -89,7 +89,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
 
 
      class NoteEntryViewHolder extends RecyclerView.ViewHolder{
-        TextView textView,Date,Keywords;
+        TextView textView,Date,Keywords, Color;
         CardView cardView;
          CheckBox selectedNote;
          Button EditNote;
@@ -108,6 +108,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
          Date = itemView.findViewById(R.id.Date);
          Keywords = itemView.findViewById(R.id.Keywords);
          cardView = itemView.findViewById(R.id.card_view);
+         Color = itemView.findViewById(R.id.tvColor);
 
            EditNote = itemView.findViewById(R.id.EditButton);
 
