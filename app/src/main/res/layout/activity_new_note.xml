@@ -22,55 +22,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/btnExport"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="60dp"
-        android:text="Export"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etWriteNote" />
-
-    <Button
-        android:id="@+id/btnImport"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="36dp"
-        android:layout_marginTop="60dp"
-        android:text="Import"
-        app:layout_constraintStart_toEndOf="@+id/btnExport"
-        app:layout_constraintTop_toBottomOf="@+id/etWriteNote" />
-
-    <Button
-        android:id="@+id/btnCancelNewNote"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="44dp"
-        android:layout_marginTop="60dp"
-        android:text="Cancel"
-        app:layout_constraintStart_toEndOf="@+id/btnImport"
-        app:layout_constraintTop_toBottomOf="@+id/etWriteNote" />
-
     <Spinner
         android:id="@+id/spNoteClr"
         android:layout_width="203dp"
         android:layout_height="38dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="22dp"
-        app:layout_constraintStart_toEndOf="@+id/TextPriority"
-        app:layout_constraintTop_toBottomOf="@+id/btnCancelNewNote" />
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/TextPriority" />
 
     <TextView
         android:id="@+id/TextPriority"
         android:layout_width="84dp"
         android:layout_height="27dp"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginBottom="35dp"
         android:text="Priority :"
         android:textSize="18sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnExport" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/etKeywords"
@@ -82,5 +52,38 @@
         android:inputType="text"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etWriteNote" />
+
+    <ImageButton
+        android:id="@+id/btnCancelNewNote"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:layout_marginEnd="35dp"
+        android:background="@color/background_material"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etKeywords"
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+
+    <ImageButton
+        android:id="@+id/btnImport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="17dp"
+        android:background="@color/background_material"
+        app:layout_constraintEnd_toStartOf="@+id/btnCancelNewNote"
+        app:layout_constraintTop_toBottomOf="@+id/etKeywords"
+        app:srcCompat="@android:drawable/stat_sys_download" />
+
+    <ImageButton
+        android:id="@+id/btnExport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="17dp"
+        android:background="@color/background_material"
+        app:layout_constraintEnd_toStartOf="@+id/btnImport"
+        app:layout_constraintTop_toBottomOf="@+id/etKeywords"
+        app:srcCompat="@android:drawable/stat_sys_upload" />
 
 </android.support.constraint.ConstraintLayout>

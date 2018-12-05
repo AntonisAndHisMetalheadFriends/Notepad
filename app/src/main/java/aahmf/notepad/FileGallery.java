@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ import java.util.List;
 public class FileGallery extends AppCompatActivity {
     private static final String TAG = "FileGallery";
     protected ArrayList<Uri> FilePaths = new ArrayList<Uri>();
-    private Button btn, Back;
+    private ImageButton btn, Back;
     private GridView gvGallery;
     private FileGalleryAdapter galleryAdapter;
     private ArrayList<Integer> mSelected = new ArrayList<>();

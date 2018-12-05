@@ -3,6 +3,7 @@ package aahmf.notepad;
 import android.content.ClipData;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,13 +13,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GalleryEdit extends AppCompatActivity {
-    private Button btn,Back;
+    private ImageButton btn, Back;
     int PICK_IMAGE_MULTIPLE = 1;
     String imageEncoded;
     List<String> imagesEncodedList;
@@ -32,8 +34,8 @@ public class GalleryEdit extends AppCompatActivity {
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery_edit);
-        btn = findViewById(R.id.btn);
-        Back = findViewById(R.id.svb);
+        btn = findViewById(R.id.btnglredit);
+        Back = findViewById(R.id.svbglredit);
         gvGallery = (GridView)findViewById(R.id.gv);
         ImagePaths2.clear();
 

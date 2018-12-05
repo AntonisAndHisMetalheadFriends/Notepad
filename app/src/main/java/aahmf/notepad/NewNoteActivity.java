@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -46,9 +47,9 @@ import java.util.List;
 
 public class NewNoteActivity extends AppCompatActivity {
 
-    private Button ExportNote;
-    private Button ImportNote;
-    private Button CancelNote;
+    private ImageButton ExportNote;
+    private ImageButton ImportNote;
+    private ImageButton CancelNote;
     private Spinner noteClr;
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;
