@@ -24,12 +24,15 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
@@ -85,6 +88,9 @@ public class NewNoteActivity extends AppCompatActivity {
         incrementCounterNotes();
         incrementCounterImages();
         incrementCounterFiles();
+
+
+
 
 
 
@@ -197,21 +203,28 @@ public class NewNoteActivity extends AppCompatActivity {
 
 
 
+
                             for(int i = 0;i<Gallery.ImagePaths.size();i++)
                             {
+
                                 DatabaseReference imagekey = mImages.child(String.valueOf(imageid));
                                 DatabaseReference path = imagekey.child("path");
                                 DatabaseReference NoteId = imagekey.child("note_id");
                                 path.setValue(Gallery.ImagePaths.get(i).toString());
                                 NoteId.setValue(id);
+                                imageid++;
+
+
                             }
                             for(int i = 0;i<filePaths.size();i++)
                             {
+
                                 DatabaseReference filekey = mFiles.child(String.valueOf(fileid));
                                 DatabaseReference path = filekey.child("path");
                                 DatabaseReference NoteId = filekey.child("note_id");
                                 path.setValue(filePaths.get(i).toString());
                                 NoteId.setValue(id);
+                                fileid++;
                             }
 
                             //==============================================================================
@@ -358,43 +371,46 @@ public class NewNoteActivity extends AppCompatActivity {
     }
     public void incrementCounterImages() {
 
-        mImages.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int size = (int) dataSnapshot.getChildrenCount();
-                for(int i =1;i<=size;i++)
-                {
 
-                    if(dataSnapshot.hasChild(String.valueOf(i)))
-                    {
-                        imageid++;
-                    }
+            Query query = mImages.orderByKey().limitToLast(1);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                   if(dataSnapshot.exists())
+                   {
+                       for(DataSnapshot child:dataSnapshot.getChildren()) {
+                           imageid = Integer.parseInt(child.getKey());
+                           imageid++;
+                       }
+                   }
+                   else return;
                 }
-            }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-            }
-        });
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
 
 
     }
     public void incrementCounterFiles() {
 
-        mFiles.addListenerForSingleValueEvent(new ValueEventListener() {
+        Query query = mFiles.orderByKey().limitToLast(1);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                int size = (int) dataSnapshot.getChildrenCount();
-                for(int i =1;i<=size;i++)
+                if(dataSnapshot.exists())
                 {
-
-                    if(dataSnapshot.hasChild(String.valueOf(i)))
-                    {
+                    for(DataSnapshot child:dataSnapshot.getChildren()) {
+                        fileid= Integer.parseInt(child.getKey());
                         fileid++;
                     }
                 }
+                else return;
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {

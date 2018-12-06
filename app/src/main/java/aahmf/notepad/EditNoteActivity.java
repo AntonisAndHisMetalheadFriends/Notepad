@@ -2,21 +2,28 @@ package aahmf.notepad;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Xml;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
+
+import com.google.firebase.database.DatabaseReference;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -36,7 +43,7 @@ public class EditNoteActivity extends AppCompatActivity {
     private final int File_Request_Code=2;
     private static String Title;
     private EditText WriteNote;
-    private ImageButton btnCancel, btnSave, btnImage, btnFile, btnExport, btnImport;
+    private ImageButton btnCancel,btnExport, btnImport;
     private Spinner noteClr;
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;
@@ -49,10 +56,7 @@ public class EditNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_note);
         btnCancel = findViewById(R.id.btnCancelEdit);
         btnExport=findViewById(R.id.btnExportEdit);
-        btnFile=findViewById(R.id.btnAddFileEdit);
         btnImport=findViewById(R.id.btnImportEdit);
-        btnImage = findViewById(R.id.btnAddImageEdit);
-        btnSave = findViewById(R.id.button9Edit);
         WriteNote = findViewById(R.id.etWriteNoteEdit);
         noteClr = findViewById(R.id.spNoteClrEdit);
         noteClr.setPrompt("Priority");
@@ -96,14 +100,6 @@ public class EditNoteActivity extends AppCompatActivity {
                 bgColor = getResources().getColor(R.color.colorWhite);
             }
         });
-
-        btnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                WriteXml(Title);
-            }
-        });
-
         btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,28 +108,35 @@ public class EditNoteActivity extends AppCompatActivity {
 
 
         });
-        btnImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(EditNoteActivity.this,GalleryEdit.class));
-            }
 
 
-        });
-        btnFile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_newnote, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.save:
+                WriteXml(Title);
+                break;
+
+            case R.id.addfile:
                 Intent intent=new Intent(EditNoteActivity.this,FileGallery.class);
                 for(int z=0;z<filesUris.size();z++){
                     intent.putExtra("File"+z,filesUris.get(z).toString());
                 }
                 startActivityForResult(intent,File_Request_Code);
-            }
+                break;
+            case R.id.image:
+                startActivity(new Intent(EditNoteActivity.this,GalleryEdit.class));
+                break;
+        }
 
-
-        });
-
-
+        return super.onOptionsItemSelected(item);
     }
 
     public void WriteXml(String xmlFile) {
