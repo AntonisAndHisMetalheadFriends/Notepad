@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -26,7 +27,7 @@ import java.util.List;
 
 public class Gallery extends AppCompatActivity {
 
-    private Button btn, Back;
+    private ImageButton btn, Back;
     int PICK_IMAGE_MULTIPLE = 1;
     String imageEncoded;
     List<String> imagesEncodedList;
@@ -41,8 +42,8 @@ public class Gallery extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
-        btn = findViewById(R.id.btn);
-        Back = findViewById(R.id.svb);
+        btn = findViewById(R.id.btnglr);
+        Back = findViewById(R.id.svbglr);
 
         gvGallery = (GridView) findViewById(R.id.gv);
 

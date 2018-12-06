@@ -14,21 +14,20 @@
         android:layout_weight="1"
         android:numColumns="3"></GridView>
 
-    <Button
-        android:id="@+id/btn"
-        android:layout_width="110dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:text="Select Multiple Images" />
 
-    <Button
-        android:id="@+id/svb"
-        android:layout_width="124dp"
-        android:layout_height="wrap_content"
-        android:text="Save and go back" />
+    <ImageButton
+        android:id="@+id/btnglredit"
+        android:layout_width="match_parent"
+        android:layout_height="76dp"
+        android:background="@color/background_material"
+        app:srcCompat="@drawable/pictureadd" />
+
+    <ImageButton
+        android:id="@+id/svbglredit"
+        android:layout_width="match_parent"
+        android:layout_height="67dp"
+        android:background="@color/background_material"
+        app:srcCompat="@android:drawable/ic_menu_save" />
 
 
 </LinearLayout>

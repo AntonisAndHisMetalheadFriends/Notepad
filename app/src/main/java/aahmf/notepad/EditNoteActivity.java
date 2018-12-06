@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -35,7 +36,7 @@ public class EditNoteActivity extends AppCompatActivity {
     private final int File_Request_Code=2;
     private static String Title;
     private EditText WriteNote;
-    private Button btnSave,btnImport,btnExport,btnCancel,btnImage,btnFile;
+    private ImageButton btnCancel, btnSave, btnImage, btnFile, btnExport, btnImport;
     private Spinner noteClr;
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;

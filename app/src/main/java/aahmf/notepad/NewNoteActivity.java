@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -46,14 +47,14 @@ import java.util.List;
 
 public class NewNoteActivity extends AppCompatActivity {
 
-    private Button ExportNote;
-    private Button ImportNote;
-    private Button CancelNote;
+    private ImageButton ExportNote;
+    private ImageButton ImportNote;
+    private ImageButton CancelNote;
     private Spinner noteClr;
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;
     private EditText WriteNote,Title, Keywords;
-    private  int id=1;
+    private  int id=1,imageid=1,fileid=1;
 
 
     private String NoteTitle, Date;
@@ -61,6 +62,8 @@ public class NewNoteActivity extends AppCompatActivity {
     private final int File_Request_Code = 2;
 
     private DatabaseReference mNotes = FirebaseDatabase.getInstance().getReference("Notes");
+    private DatabaseReference mImages = FirebaseDatabase.getInstance().getReference("Images");
+    private DatabaseReference mFiles = FirebaseDatabase.getInstance().getReference("Files");
     private FirebaseUser user = LogInActivity.getUser();
 
     @Override
@@ -79,7 +82,9 @@ public class NewNoteActivity extends AppCompatActivity {
         Calendar calendar = Calendar.getInstance();
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         Date = df.format(calendar.getTime());
-        incrementCounter();
+        incrementCounterNotes();
+        incrementCounterImages();
+        incrementCounterFiles();
 
 
 
@@ -169,13 +174,15 @@ public class NewNoteActivity extends AppCompatActivity {
 
                             DatabaseReference key = mNotes.child(String.valueOf(id));
                             DatabaseReference title = key.child("NoteTitle");
-                            DatabaseReference Images = key.child("Images");
+                           // DatabaseReference Images = key.child("Images");
                             DatabaseReference Files = key.child("Files");
                             DatabaseReference Kwords = key.child("Keywords");
                             DatabaseReference NoteDate = key.child("DateOfCreation");
                             DatabaseReference Content = key.child("Content");
                             DatabaseReference priority = key.child("Priority");
                             DatabaseReference userid = key.child("UserId");
+                            DatabaseReference useridAndTitle = key.child("UserId_Title");
+
 
                             Kwords.setValue(Keywords.getText().toString());
                             NoteDate.setValue(Date);
@@ -183,13 +190,28 @@ public class NewNoteActivity extends AppCompatActivity {
                             priority.setValue(bgColor);
                             userid.setValue(user.getUid());
                             title.setValue(NoteTitle);
+                            useridAndTitle.setValue(user.getUid()+"_"+NoteTitle);
+
+
+
+
+
+
                             for(int i = 0;i<Gallery.ImagePaths.size();i++)
                             {
-                                Images.child("Image "+i).setValue(Gallery.ImagePaths.get(i).toString());
+                                DatabaseReference imagekey = mImages.child(String.valueOf(imageid));
+                                DatabaseReference path = imagekey.child("path");
+                                DatabaseReference NoteId = imagekey.child("note_id");
+                                path.setValue(Gallery.ImagePaths.get(i).toString());
+                                NoteId.setValue(id);
                             }
                             for(int i = 0;i<filePaths.size();i++)
                             {
-                                Files.child("File "+i).setValue(filePaths.get(i).toString());
+                                DatabaseReference filekey = mFiles.child(String.valueOf(fileid));
+                                DatabaseReference path = filekey.child("path");
+                                DatabaseReference NoteId = filekey.child("note_id");
+                                path.setValue(filePaths.get(i).toString());
+                                NoteId.setValue(id);
                             }
 
                             //==============================================================================
@@ -310,7 +332,7 @@ public class NewNoteActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public void incrementCounter() {
+    public void incrementCounterNotes() {
 
         mNotes.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -322,6 +344,54 @@ public class NewNoteActivity extends AppCompatActivity {
                     if(dataSnapshot.hasChild(String.valueOf(i)))
                     {
                         id++;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+    public void incrementCounterImages() {
+
+        mImages.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int size = (int) dataSnapshot.getChildrenCount();
+                for(int i =1;i<=size;i++)
+                {
+
+                    if(dataSnapshot.hasChild(String.valueOf(i)))
+                    {
+                        imageid++;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+    public void incrementCounterFiles() {
+
+        mFiles.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int size = (int) dataSnapshot.getChildrenCount();
+                for(int i =1;i<=size;i++)
+                {
+
+                    if(dataSnapshot.hasChild(String.valueOf(i)))
+                    {
+                        fileid++;
                     }
                 }
             }

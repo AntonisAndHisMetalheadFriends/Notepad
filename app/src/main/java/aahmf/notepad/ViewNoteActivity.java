@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -19,6 +20,14 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -47,11 +56,13 @@ public class ViewNoteActivity extends AppCompatActivity {
     protected ArrayList<Uri>filesUris = new ArrayList<Uri>();
     private static final int PERMISSIONS_REQUEST_READ_MEDIA = 100;
     private int id = NoteEntryAdapter.getId();
+    private DatabaseReference mNotes = FirebaseDatabase.getInstance().getReference("Notes");
+    private FirebaseUser user = LogInActivity.getUser();
+    private String uid2= user.getUid();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //getIntent().addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        //Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_note);
         NoteText = findViewById(R.id.NoteText);
@@ -62,9 +73,10 @@ public class ViewNoteActivity extends AppCompatActivity {
         NoteText.setFocusable(false);
         NoteText.setClickable(false);
         Title = NoteEntryAdapter.getTitle();
+        GetOnlineNotes(uid2,Title);
         TitleText.setText(Title);
         Images.clear();
-        loadXML(Title);
+        //loadXML(Title);
         gvGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             Uri abc = null;
             @Override
@@ -315,5 +327,57 @@ public class ViewNoteActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void GetOnlineNotes(final String uid,final  String Tit)
+    {
+
+        mNotes.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Query query = mNotes.orderByChild("UserId_Title").equalTo(uid+"_"+Tit);
+
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        int counter = (int)dataSnapshot.getChildrenCount();
+                        int y=1;
+                        int found=0;
+                        if(dataSnapshot.exists())
+                        {
+                            while (found!=counter) {
+
+                                if(dataSnapshot.hasChild(String.valueOf(y))) {
+                                    NoteText.setText(dataSnapshot.child(String.valueOf(y)).child("Content").getValue().toString());
+
+                                    y++;
+                                    found++;
+
+                                }
+                                else
+                                {
+                                    y++;
+                                }
+                            }
+
+                        }
+                        //Toast.makeText(MainMenuActivity.this,"Den Mphke Sthn IF",Toast.LENGTH_LONG).show();
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 }
