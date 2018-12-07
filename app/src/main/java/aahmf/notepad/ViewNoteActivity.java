@@ -57,8 +57,11 @@ public class ViewNoteActivity extends AppCompatActivity {
     private static final int PERMISSIONS_REQUEST_READ_MEDIA = 100;
     private int id = NoteEntryAdapter.getId();
     private DatabaseReference mNotes = FirebaseDatabase.getInstance().getReference("Notes");
+    private DatabaseReference mImages = FirebaseDatabase.getInstance().getReference("Images");
+    private DatabaseReference mFiles = FirebaseDatabase.getInstance().getReference("Files");
     private FirebaseUser user = LogInActivity.getUser();
     private String uid2= user.getUid();
+    private int NoteId=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +79,7 @@ public class ViewNoteActivity extends AppCompatActivity {
         GetOnlineNotes(uid2,Title);
         TitleText.setText(Title);
         Images.clear();
+
         //loadXML(Title);
         gvGallery.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             Uri abc = null;
@@ -341,6 +345,59 @@ public class ViewNoteActivity extends AppCompatActivity {
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for(DataSnapshot child:dataSnapshot.getChildren())
+                        {
+                            NoteId = Integer.parseInt(child.getKey());
+                            Query query2 = mImages.orderByChild("note_id").equalTo(NoteId);
+                            query2.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.exists()) {
+                                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                            String path = child.child("path").getValue().toString();
+                                            Images.add(Uri.parse(path));
+                                            galleryAdapter = new GalleryAdapter(getApplicationContext(), Images);
+                                            gvGallery.setAdapter(galleryAdapter);
+                                            gvGallery.setVerticalSpacing(gvGallery.getHorizontalSpacing());
+                                            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvGallery
+                                                    .getLayoutParams();
+                                            mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+
+
+                            Query query3 = mFiles.orderByChild("note_id").equalTo(NoteId);
+                            query3.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                    if(dataSnapshot.exists()) {
+                                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                            String path = child.child("path").getValue().toString();
+                                            filesUris.add(Uri.parse(path));
+
+                                            fileGalleryAdapter = new FileGalleryAdapter(getApplicationContext(), filesUris);
+                                            gvfGallery.setAdapter(fileGalleryAdapter);
+                                            gvfGallery.setVerticalSpacing(gvfGallery.getHorizontalSpacing());
+                                            ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) gvfGallery
+                                                    .getLayoutParams();
+                                            mlp.setMargins(0, gvfGallery.getHorizontalSpacing(), 0, 0);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
                         int counter = (int)dataSnapshot.getChildrenCount();
                         int y=1;
                         int found=0;
@@ -362,7 +419,7 @@ public class ViewNoteActivity extends AppCompatActivity {
                             }
 
                         }
-                        //Toast.makeText(MainMenuActivity.this,"Den Mphke Sthn IF",Toast.LENGTH_LONG).show();
+
 
                     }
 
@@ -371,6 +428,7 @@ public class ViewNoteActivity extends AppCompatActivity {
 
                     }
                 });
+
 
             }
 

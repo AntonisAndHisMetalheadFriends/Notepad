@@ -94,7 +94,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                //filter(s.toString());
+                filter(s.toString());
 
         }
         });
@@ -122,6 +122,7 @@ public class MainMenuActivity extends AppCompatActivity {
 
 
         adapter = new NoteEntryAdapter(this, noteEntryList);
+        adapter.notifyDataSetChanged();
         recyclerView.setAdapter(adapter);
         kAuth = FirebaseAuth.getInstance();
 
@@ -558,7 +559,7 @@ public class MainMenuActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        GetOnlineNotes(user.getUid());
+       adapter.notifyDataSetChanged();
     }
 
 }

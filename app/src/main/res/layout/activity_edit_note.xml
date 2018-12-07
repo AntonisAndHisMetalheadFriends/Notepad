@@ -27,10 +27,9 @@
         android:id="@+id/spNoteClrEdit"
         android:layout_width="147dp"
         android:layout_height="32dp"
-        android:layout_marginTop="63dp"
         android:layout_marginEnd="101dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button9Edit" />
+        tools:layout_editor_absoluteY="451dp" />
 
     <TextView
         android:id="@+id/PriorityTextEdit"
@@ -55,28 +54,6 @@
         app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
     <ImageButton
-        android:id="@+id/button9Edit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="9dp"
-        android:layout_marginEnd="12dp"
-        android:background="@color/background_material"
-        app:layout_constraintEnd_toStartOf="@+id/btnCancelEdit"
-        app:layout_constraintTop_toBottomOf="@+id/btnImportEdit"
-        app:srcCompat="@android:drawable/ic_menu_save" />
-
-    <ImageButton
-        android:id="@+id/btnAddFileEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="19dp"
-        android:background="@color/background_material"
-        app:layout_constraintEnd_toStartOf="@+id/btnAddImageEdit"
-        app:layout_constraintTop_toBottomOf="@+id/etWriteNoteEdit"
-        app:srcCompat="@drawable/addfile" />
-
-    <ImageButton
         android:id="@+id/btnImportEdit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -86,17 +63,6 @@
         app:layout_constraintEnd_toStartOf="@+id/btnExportEdit"
         app:layout_constraintTop_toBottomOf="@+id/etWriteNoteEdit"
         app:srcCompat="@android:drawable/stat_sys_download" />
-
-    <ImageButton
-        android:id="@+id/btnAddImageEdit"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="13dp"
-        android:background="@color/background_material"
-        app:layout_constraintEnd_toStartOf="@+id/btnImportEdit"
-        app:layout_constraintTop_toBottomOf="@+id/etWriteNoteEdit"
-        app:srcCompat="@drawable/pictureadd" />
 
     <ImageButton
         android:id="@+id/btnExportEdit"
