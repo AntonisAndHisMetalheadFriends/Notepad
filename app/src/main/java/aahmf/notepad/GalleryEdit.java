@@ -41,6 +41,7 @@ public class GalleryEdit extends AppCompatActivity {
         ImagePaths2.clear();
 
 
+
     if (ImagePaths3.size()!=0)
     {
         for (int y = 0; y < ImagePaths3.size(); y++)
@@ -68,6 +69,7 @@ public class GalleryEdit extends AppCompatActivity {
                     .getLayoutParams();
             mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
         }
+        FirstImages.clear();
     }
 
 

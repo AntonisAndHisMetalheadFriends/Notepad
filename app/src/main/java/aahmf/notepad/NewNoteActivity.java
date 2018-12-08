@@ -77,6 +77,7 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
     private EditText WriteNote, Title, Keywords;
     private int id = 1, imageid = 1, fileid = 1;
     private double longitude,latitude;
+    private Address currentAdress;
 
 
     private String NoteTitle, Date;
@@ -215,6 +216,7 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
                             DatabaseReference userid = key.child("UserId");
                             DatabaseReference geolocLan = key.child("GeoLocLan");
                             DatabaseReference geoLocLon = key.child("GeoLocLon");
+                            DatabaseReference geoLocAddr = key.child("Address");
                             DatabaseReference useridAndTitle = key.child("UserId_Title");
 
 
@@ -226,6 +228,7 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
                             title.setValue(NoteTitle);
                             geolocLan.setValue(latitude);
                             geoLocLon.setValue(longitude);
+                            geoLocAddr.setValue(currentAdress.getAddressLine(0));
                             useridAndTitle.setValue(user.getUid() + "_" + NoteTitle);
 
 
@@ -467,6 +470,7 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
                   Location location = (Location) task.getResult();
                   latitude = location.getLatitude();
                   longitude = location.getLongitude();
+                  currentAdress = getAddress(latitude,longitude);
               }
             }
         });
