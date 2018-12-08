@@ -354,7 +354,7 @@ public class NewNoteActivity extends AppCompatActivity {
                 for(int i =1;i<=size;i++)
                 {
 
-                    if(dataSnapshot.hasChild(String.valueOf(i)))
+                    if(dataSnapshot.hasChild(String.valueOf(id)))
                     {
                         id++;
                     }

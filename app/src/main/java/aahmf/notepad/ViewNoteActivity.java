@@ -279,19 +279,55 @@ public class ViewNoteActivity extends AppCompatActivity {
         }
 
         public void deleteNote(String filename) {
-        try{
-            File dir = new File("/data/user/0/aahmf.notepad/files");
-            File file =new File (dir,filename);
+            final Query query = mNotes.orderByChild("NoteTitle").equalTo(filename);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot child:dataSnapshot.getChildren())
+                    {
+                        int Noteid = Integer.parseInt(child.getKey());
+                        Query queryremoveimage = mImages.orderByChild("note_id").equalTo(Noteid);
+                        queryremoveimage.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot child:dataSnapshot.getChildren())
+                                {
+                                    child.getRef().removeValue();
+                                }
+                            }
 
-            if(file.exists()){
-                file.delete();
-                SharedPreferences mSharedPref = getSharedPreferences("NoteColor", MODE_PRIVATE);
-                mSharedPref.edit().remove(Title).apply();
-            }
-         }catch(Exception e) {
-            e.printStackTrace();
-            }
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        Query queryremoveFile = mFiles.orderByChild("note_id").equalTo(Noteid);
+                        queryremoveFile.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot child:dataSnapshot.getChildren())
+                                {
+                                    child.getRef().removeValue();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        child.getRef().removeValue();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
         }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_two,menu);
