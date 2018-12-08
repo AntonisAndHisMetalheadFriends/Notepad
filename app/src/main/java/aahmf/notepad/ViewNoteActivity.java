@@ -372,24 +372,31 @@ public class ViewNoteActivity extends AppCompatActivity {
     public void GetOnlineNotes(final String uid,final  String Tit)
     {
 
-        mNotes.addListenerForSingleValueEvent(new ValueEventListener() {
+        mNotes.addListenerForSingleValueEvent(new ValueEventListener()
+        {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
 
                 Query query = mNotes.orderByChild("UserId_Title").equalTo(uid+"_"+Tit);
 
                 query.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                    {
                         for(DataSnapshot child:dataSnapshot.getChildren())
                         {
                             NoteId = Integer.parseInt(child.getKey());
                             Query query2 = mImages.orderByChild("note_id").equalTo(NoteId);
-                            query2.addListenerForSingleValueEvent(new ValueEventListener() {
+                            query2.addListenerForSingleValueEvent(new ValueEventListener()
+                            {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                                    if(dataSnapshot.exists()) {
-                                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                                {
+                                    if(dataSnapshot.exists())
+                                    {
+                                        for (DataSnapshot child : dataSnapshot.getChildren())
+                                        {
                                             String path = child.child("path").getValue().toString();
                                             Images.add(Uri.parse(path));
                                             galleryAdapter = new GalleryAdapter(getApplicationContext(), Images);
@@ -403,18 +410,22 @@ public class ViewNoteActivity extends AppCompatActivity {
                                 }
 
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                public void onCancelled(@NonNull DatabaseError databaseError)
+                                {
 
                                 }
                             });
 
 
                             Query query3 = mFiles.orderByChild("note_id").equalTo(NoteId);
-                            query3.addListenerForSingleValueEvent(new ValueEventListener() {
+                            query3.addListenerForSingleValueEvent(new ValueEventListener()
+                            {
                                 @Override
-                                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                                {
                                     if(dataSnapshot.exists()) {
-                                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                                        for (DataSnapshot child : dataSnapshot.getChildren())
+                                        {
                                             String path = child.child("path").getValue().toString();
                                             filesUris.add(Uri.parse(path));
 
@@ -429,7 +440,8 @@ public class ViewNoteActivity extends AppCompatActivity {
                                 }
 
                                 @Override
-                                public void onCancelled(@NonNull DatabaseError databaseError) {
+                                public void onCancelled(@NonNull DatabaseError databaseError)
+                                {
 
                                 }
                             });
@@ -439,9 +451,11 @@ public class ViewNoteActivity extends AppCompatActivity {
                         int found=0;
                         if(dataSnapshot.exists())
                         {
-                            while (found!=counter) {
+                            while (found!=counter)
+                            {
 
-                                if(dataSnapshot.hasChild(String.valueOf(y))) {
+                                if(dataSnapshot.hasChild(String.valueOf(y)))
+                                {
                                     NoteText.setText(dataSnapshot.child(String.valueOf(y)).child("Content").getValue().toString());
 
                                     y++;
@@ -460,7 +474,8 @@ public class ViewNoteActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
+                    public void onCancelled(@NonNull DatabaseError databaseError)
+                    {
 
                     }
                 });
@@ -469,7 +484,8 @@ public class ViewNoteActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
+            public void onCancelled(@NonNull DatabaseError databaseError)
+            {
 
             }
         });
