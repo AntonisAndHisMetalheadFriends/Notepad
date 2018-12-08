@@ -5,6 +5,10 @@
 
 
     <item
+        android:id="@+id/ShowMap"
+        android:title="Show Notes On Map"
+        app:showAsAction="never" />
+    <item
         android:id="@+id/sign_out"
         android:title="@string/sign_out"
         android:icon="@drawable/signout"

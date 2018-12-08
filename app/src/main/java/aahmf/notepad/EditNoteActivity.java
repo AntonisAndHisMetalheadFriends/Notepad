@@ -76,8 +76,8 @@ public class EditNoteActivity extends AppCompatActivity {
 
         Title=NoteEntryAdapter.getTitle();
         GalleryEdit.ImagePaths3.clear();
-        loadXML(Title);
-        incrementCounterNotes();
+       // loadXML(Title);
+        //incrementCounterNotes();
         incrementCounterImages();
 
         ArrayAdapter<String> adapterOne = new ArrayAdapter<>(EditNoteActivity.this,android.R.layout.

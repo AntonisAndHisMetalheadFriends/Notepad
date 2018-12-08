@@ -171,6 +171,10 @@ public class MainMenuActivity extends AppCompatActivity {
                 startActivity(new Intent(MainMenuActivity.this,NewNoteActivity.class));
                 break;
 
+            case  R.id.ShowMap:
+                startActivity(new Intent(MainMenuActivity.this,GeoLocationOfNotesActivity.class));
+                break;
+
             case R.id.Sort:
                 final CharSequence[] items = {"By Title","By Priority","By Keywords","By Date"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
