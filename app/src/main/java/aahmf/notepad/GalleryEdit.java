@@ -28,6 +28,7 @@ public class GalleryEdit extends AppCompatActivity {
     private GalleryAdapter galleryAdapter;
     protected static ArrayList<Uri> ImagePaths2 = new ArrayList<Uri>();
     protected static ArrayList<Uri> ImagePaths3 = new ArrayList<Uri>();
+    public ArrayList<Uri> FirstImages = EditNoteActivity.getImages();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -38,6 +39,7 @@ public class GalleryEdit extends AppCompatActivity {
         Back = findViewById(R.id.svbglredit);
         gvGallery = (GridView)findViewById(R.id.gv);
         ImagePaths2.clear();
+
 
     if (ImagePaths3.size()!=0)
     {
@@ -55,9 +57,9 @@ public class GalleryEdit extends AppCompatActivity {
     }
     else
     {
-        for (int y = 0; y < ViewNoteActivity.Images.size(); y++)
+        for (int y = 0; y < FirstImages.size(); y++)
         {
-            ImagePaths2.add(ViewNoteActivity.Images.get(y));
+            ImagePaths2.add(FirstImages.get(y));
 
             galleryAdapter = new GalleryAdapter(getApplicationContext(), ImagePaths2);
             gvGallery.setAdapter(galleryAdapter);
