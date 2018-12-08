@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.util.Xml;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,7 +25,13 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -48,7 +56,15 @@ public class EditNoteActivity extends AppCompatActivity {
     private static final String[] coloursTwo = {"White", "Green", "Yellow", "Red"};
     int bgColor;
     private String date,keywords;
-    ArrayList<Uri>Images = new ArrayList<Uri>(),filesUris= new ArrayList<Uri>();
+    static ArrayList<Uri>Images = new ArrayList<Uri>();
+    ArrayList<Uri> filesUris= new ArrayList<Uri>();
+    private DatabaseReference mImages = FirebaseDatabase.getInstance().getReference("Images");
+    private  int id=1,imageid=1;
+    private FirebaseUser user = LogInActivity.getUser();
+    private DatabaseReference mNotes = FirebaseDatabase.getInstance().getReference("Notes");
+    private int Id=0;
+    private String uid2= user.getUid();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,8 +81,10 @@ public class EditNoteActivity extends AppCompatActivity {
 
         Title=NoteEntryAdapter.getTitle();
         GalleryEdit.ImagePaths3.clear();
-        loadXML(Title);
+        //loadXML(Title);
 
+        incrementCounterImages();
+        GetOnlineNotes(uid2,Title);
 
         ArrayAdapter<String> adapterOne = new ArrayAdapter<>(EditNoteActivity.this,android.R.layout.
                 simple_spinner_item,coloursTwo);
@@ -121,7 +139,35 @@ public class EditNoteActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.save:
-                WriteXml(Title);
+                if(ViewNoteActivity.Images.size()!=0) {
+                    for (int i = ViewNoteActivity.Images.size(); i < GalleryEdit.ImagePaths2.size(); i++) {
+
+                        DatabaseReference imagekey = mImages.child(String.valueOf(imageid));
+                        DatabaseReference path = imagekey.child("path");
+                        DatabaseReference NoteId = imagekey.child("note_id");
+                        path.setValue(GalleryEdit.ImagePaths2.get(i).toString());
+                        NoteId.setValue(Id);
+                        imageid++;
+
+
+                    }
+                }
+                else {
+                    for (int i = 0; i < GalleryEdit.ImagePaths2.size(); i++) {
+
+                        DatabaseReference imagekey = mImages.child(String.valueOf(imageid));
+                        DatabaseReference path = imagekey.child("path");
+                        DatabaseReference NoteId = imagekey.child("note_id");
+                        path.setValue(GalleryEdit.ImagePaths2.get(i).toString());
+                        NoteId.setValue(Id);
+                        imageid++;
+
+                    }
+                }
+
+                startActivity(new Intent(EditNoteActivity.this,MainMenuActivity.class));
+                //WriteXml(Title);
+                Images.clear();
                 break;
 
             case R.id.addfile:
@@ -174,7 +220,8 @@ public class EditNoteActivity extends AppCompatActivity {
                 }
 
             }
-            else {
+            else
+                {
                 if (ViewNoteActivity.Images.size() == 0) {
                     for (int i = 0; i < GalleryEdit.ImagePaths2.size(); i++) {
                         xmlSerializer.startTag(null, "Image" + i);
@@ -401,5 +448,115 @@ public class EditNoteActivity extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+    public void incrementCounterImages() {
+
+
+        Query query = mImages.orderByKey().limitToLast(1);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot.exists())
+                {
+                    for(DataSnapshot child:dataSnapshot.getChildren()) {
+                        imageid = Integer.parseInt(child.getKey());
+                        imageid++;
+                    }
+                }
+                else return;
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+    public void incrementCounterNotes() {
+
+
+        mNotes.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int size = (int) dataSnapshot.getChildrenCount();
+                for(int i =1;i<=size;i++)
+                {
+
+                    if(dataSnapshot.hasChild(String.valueOf(i)))
+                    {
+                        id++;
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+    public void GetOnlineNotes(final String uid, final  String Tit)
+    {
+
+        mNotes.addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+
+                Query query = mNotes.orderByChild("UserId_Title").equalTo(uid + "_" + Tit);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            Id = Integer.parseInt(child.getKey());
+                            Query query2 = mImages.orderByChild("note_id").equalTo(Id);
+                            query2.addListenerForSingleValueEvent(new ValueEventListener()
+                            {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                                {
+                                    if(dataSnapshot.exists())
+                                    {
+                                        for (DataSnapshot child : dataSnapshot.getChildren())
+                                        {
+                                            String path = child.child("path").getValue().toString();
+                                            Images.add(Uri.parse(path));
+
+
+
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                    }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    public static ArrayList<Uri> getImages() {
+        return Images;
     }
 }
