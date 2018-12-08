@@ -233,6 +233,10 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
     public static String getTitle() {
         return Title;
     }
+    public static void setTitle(String title)
+    {
+        Title = title;
+    }
 
     public static int getId() {
         return id;

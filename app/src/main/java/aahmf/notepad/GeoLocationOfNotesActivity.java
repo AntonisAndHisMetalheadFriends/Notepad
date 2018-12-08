@@ -1,6 +1,7 @@
 package aahmf.notepad;
 
 import android.app.DownloadManager;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +30,7 @@ public class GeoLocationOfNotesActivity extends FragmentActivity implements OnMa
     private FirebaseUser user = LogInActivity.getUser();
     private String  uid = user.getUid();
     private List<Double> longi,lat;
-    private List<String> Title;
+    private List<String> Title,Content;
     private DatabaseReference mNotes = FirebaseDatabase.getInstance().getReference("Notes");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class GeoLocationOfNotesActivity extends FragmentActivity implements OnMa
         longi = new ArrayList<>();
         lat = new ArrayList<>();
         Title = new ArrayList<>();
+        Content = new ArrayList<>();
         GetNotes(uid);
     }
 
@@ -78,15 +81,24 @@ public class GeoLocationOfNotesActivity extends FragmentActivity implements OnMa
                         lat.add(Double.parseDouble(child.child("GeoLocLan").getValue().toString()));
                         longi.add(Double.parseDouble(child.child("GeoLocLon").getValue().toString()));
                         Title.add(child.child("NoteTitle").getValue().toString());
+                        Content.add(child.child("Content").getValue().toString());
 
                     }
 
                     for(int i=0;i<longi.size();i++)
                     {
                         LatLng positionOfNote = new LatLng(lat.get(i),longi.get(i));
-                        mMap.addMarker(new MarkerOptions().position(positionOfNote).title(Title.get(i)));
+                      Marker Note = mMap.addMarker(new MarkerOptions().position(positionOfNote).title(Title.get(i)).snippet("Content :"+Content.get(i)));
+                      Note.setTag(0);
                         mMap.moveCamera(CameraUpdateFactory.newLatLng(positionOfNote));
                     }
+                    mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                        @Override
+                        public void onInfoWindowClick(Marker marker) {
+                            NoteEntryAdapter.setTitle(marker.getTitle());
+                            startActivity(new Intent(GeoLocationOfNotesActivity.this,ViewNoteActivity.class));
+                        }
+                    });
                 }
             }
 
@@ -102,4 +114,6 @@ public class GeoLocationOfNotesActivity extends FragmentActivity implements OnMa
         super.onStart();
         GetNotes(uid);
     }
+
+
 }
