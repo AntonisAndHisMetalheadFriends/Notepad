@@ -587,7 +587,8 @@ public class MainMenuActivity extends AppCompatActivity {
                                             Date = dataSnapshot.child(String.valueOf(y)).child("DateOfCreation").getValue().toString();
                                             Kwords = dataSnapshot.child(String.valueOf(y)).child("Keywords").getValue().toString();
                                             String Title = dataSnapshot.child(String.valueOf(y)).child("NoteTitle").getValue().toString();
-                                            noteEntryList.add(new NoteEntry(y, Title, Date, Kwords));
+                                            String Location = dataSnapshot.child(String.valueOf(y)).child("Address").getValue().toString();
+                                            noteEntryList.add(new NoteEntry(y, Title, Date, Kwords,Location));
                                             y++;
                                             adapter.notifyDataSetChanged();
                                             found++;
