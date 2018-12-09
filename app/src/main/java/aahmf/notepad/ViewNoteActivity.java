@@ -2,13 +2,17 @@ package aahmf.notepad;
 
 import android.app.AlertDialog;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -59,7 +63,7 @@ public class ViewNoteActivity extends AppCompatActivity {
     private DatabaseReference mNotes = FirebaseDatabase.getInstance().getReference("Notes");
     private DatabaseReference mImages = FirebaseDatabase.getInstance().getReference("Images");
     private DatabaseReference mFiles = FirebaseDatabase.getInstance().getReference("Files");
-    private FirebaseUser user = LogInActivity.getUser();
+    private  FirebaseUser user = LogInActivity.getUser();
     private String uid2= user.getUid();
     private int NoteId=0;
 
@@ -261,15 +265,18 @@ public class ViewNoteActivity extends AppCompatActivity {
 
         public void pinToStatusBar()
         {
+
+            createNotificationChannel();
             Intent intent = new Intent(this, ViewNoteActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-            Notification.Builder NB = new Notification.Builder(this);
+            NotificationCompat.Builder NB = new NotificationCompat.Builder(this,String.valueOf(id));
             NB.setContentTitle(Title);
             NB.setContentText(NoteText.getText().toString());
             NB.setSmallIcon(R.mipmap.ic_launcher);
-            NB.setPriority(Notification.PRIORITY_MAX);
+            NB.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+            NB.setOngoing(true);
             NB.setContentIntent(pendingIntent);
             NB.setAutoCancel(true);
             notificationManager.notify(id,NB.build());
@@ -278,20 +285,72 @@ public class ViewNoteActivity extends AppCompatActivity {
 
         }
 
-        public void deleteNote(String filename) {
-        try{
-            File dir = new File("/data/user/0/aahmf.notepad/files");
-            File file =new File (dir,filename);
-
-            if(file.exists()){
-                file.delete();
-                SharedPreferences mSharedPref = getSharedPreferences("NoteColor", MODE_PRIVATE);
-                mSharedPref.edit().remove(Title).apply();
-            }
-         }catch(Exception e) {
-            e.printStackTrace();
-            }
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "new Channel";
+            String description ="Desc";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(String.valueOf(id), name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
         }
+    }
+
+        public void deleteNote(String filename) {
+            final Query query = mNotes.orderByChild("NoteTitle").equalTo(filename);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot child:dataSnapshot.getChildren())
+                    {
+                        int Noteid = Integer.parseInt(child.getKey());
+                        Query queryremoveimage = mImages.orderByChild("note_id").equalTo(Noteid);
+                        queryremoveimage.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot child:dataSnapshot.getChildren())
+                                {
+                                    child.getRef().removeValue();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        Query queryremoveFile = mFiles.orderByChild("note_id").equalTo(Noteid);
+                        queryremoveFile.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot child:dataSnapshot.getChildren())
+                                {
+                                    child.getRef().removeValue();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        child.getRef().removeValue();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_two,menu);

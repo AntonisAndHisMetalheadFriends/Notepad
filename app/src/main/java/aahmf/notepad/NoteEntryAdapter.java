@@ -3,6 +3,8 @@ package aahmf.notepad;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Address;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +14,14 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,10 +38,13 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
     private List<NoteEntry> noteEntryList1;
     private static boolean isSelected=false;
     protected static List<NoteEntry> deleteList1 = new ArrayList<>();
+    private List<Integer> positionList = new ArrayList<>();
     private static String date,keywords;
 
     static  String Title;
     private static int id;
+    private List<CheckBox> checkBox2 = new ArrayList<>();
+    private List<Button> Edit2 = new ArrayList<>();
 
     MainMenuActivity main = new MainMenuActivity();
     String path = main.getPath();
@@ -58,6 +71,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
     public void onBindViewHolder(NoteEntryViewHolder holder, int position) {
         final NoteEntry noteEntry = noteEntryList1.get(position);
         holder.Keywords.setText(noteEntry.getKwords());
+        holder.Location.setText(noteEntry.getLocation());
         holder.Date.setText(noteEntry.getDate());
         holder.textView.setText(noteEntry.getTitle());
         noteEntry.setCheckBox(holder.selectedNote);
@@ -89,7 +103,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
 
 
      class NoteEntryViewHolder extends RecyclerView.ViewHolder{
-        TextView textView,Date,Keywords, Color;
+        TextView textView,Date,Keywords, Color,Location;
         CardView cardView;
          CheckBox selectedNote;
          Button EditNote;
@@ -106,6 +120,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
 
          textView = itemView.findViewById(R.id.textView);
          Date = itemView.findViewById(R.id.Date);
+         Location = itemView.findViewById(R.id.Location_Text);
          Keywords = itemView.findViewById(R.id.Keywords);
          cardView = itemView.findViewById(R.id.card_view);
          Color = itemView.findViewById(R.id.tvColor);
@@ -147,6 +162,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
                  if(isSelected==true)
                  {
                      position = getAdapterPosition();
+                     positionList.add(position);
                      NoteEntry NE = noteEntryList1.get(position);
                      deleteList1.add(NE);
                      main1.setDeleteList(deleteList1);
@@ -154,6 +170,8 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
                      selectedNote.setChecked(true);
                      selectedNote.setVisibility(View.VISIBLE);
                      EditNote.setVisibility(View.INVISIBLE);
+                     checkBox2.add(selectedNote);
+                     Edit2.add(EditNote);
                  }
                  else {
                      position = getAdapterPosition();
@@ -176,6 +194,7 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
              public boolean onLongClick(View v) {
 
                  position = getAdapterPosition();
+                 positionList.add(position);
                  NoteEntry NE = noteEntryList1.get(position);
                  deleteList1.add(NE);
                  main1.setDeleteList(deleteList1);
@@ -184,6 +203,8 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
                      selectedNote.setVisibility(View.VISIBLE);
                      main.SetCheckBoxtrue(isSelected);
                      EditNote.setVisibility(View.INVISIBLE);
+                     checkBox2.add(selectedNote);
+                     Edit2.add(EditNote);
                      return true;
              }
          });
@@ -212,6 +233,10 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
     public static String getTitle() {
         return Title;
     }
+    public static void setTitle(String title)
+    {
+        Title = title;
+    }
 
     public static int getId() {
         return id;
@@ -232,4 +257,20 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
     public static void setKeywords(String keywords) {
         NoteEntryAdapter.keywords = keywords;
     }
+    public List<Integer> getPositionList()
+    {
+        return positionList;
+    }
+
+    public List<CheckBox> getCheck()
+    {
+        return checkBox2;
+    }
+
+    public List<Button> getEdit()
+    {
+        return Edit2;
+    }
+
+
 }

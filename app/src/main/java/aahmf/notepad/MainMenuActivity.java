@@ -65,6 +65,8 @@ public class MainMenuActivity extends AppCompatActivity {
     private String Date,Kwords;
 
     private DatabaseReference mNotes = FirebaseDatabase.getInstance().getReference("Notes");
+    private DatabaseReference mImages = FirebaseDatabase.getInstance().getReference("Images");
+    private DatabaseReference mFiles = FirebaseDatabase.getInstance().getReference("Files");
     private FirebaseUser user = LogInActivity.getUser();
 
 
@@ -169,6 +171,10 @@ public class MainMenuActivity extends AppCompatActivity {
                 startActivity(new Intent(MainMenuActivity.this,NewNoteActivity.class));
                 break;
 
+            case  R.id.ShowMap:
+                startActivity(new Intent(MainMenuActivity.this,GeoLocationOfNotesActivity.class));
+                break;
+
             case R.id.Sort:
                 final CharSequence[] items = {"By Title","By Priority","By Keywords","By Date"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainMenuActivity.this);
@@ -204,11 +210,17 @@ public class MainMenuActivity extends AppCompatActivity {
 
             case R.id.CancelSelection:
                NoteEntryAdapter.setIsSelected(false);
-                recreate();
+               CancelSelection(noteEntryList);
+                adapter.notifyDataSetChanged();
+                setItemVisible(men,R.id.CancelSelection,false);
+                setItemVisible(men,R.id.delete_notes,false);
+                //recreate();
                 break;
             case R.id.delete_notes:
                 NoteEntryAdapter.setIsSelected(false);
                 DeleteMultipleNotes();
+                setItemVisible(men,R.id.CancelSelection,false);
+                setItemVisible(men,R.id.delete_notes,false);
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -247,38 +259,89 @@ public class MainMenuActivity extends AppCompatActivity {
 
 
 
-    public void CancelSelection(List<NoteEntry> list,CheckBox box,Button Edit)
+    public void CancelSelection(List<NoteEntry> list)
     {
+        List<Button> Buttons = adapter.getEdit();
+        List<CheckBox> checkBoxes = adapter.getCheck();
         if(isSelected==false)
         {
         for(int i=0;i<list.size();i++)
         {
-            NoteEntry NE = list.get(i);
-            NE.setCheckBox(box);
-            box = NE.getCheckBox();
-            NE.setEditButton(Edit);
-            Edit = NE.getEditButton();
+
+            Button Edit = Buttons.get(i);
+            CheckBox box = checkBoxes.get(i);
             box.setVisibility(View.INVISIBLE);
             Edit.setVisibility(View.VISIBLE);
             box.setChecked(false);
-            adapter.notifyItemChanged(i);
+           adapter.notifyDataSetChanged();
         }}
+        adapter.getEdit().clear();
+        adapter.getCheck().clear();
     }
 
     public void DeleteMultipleNotes()
     {
+        List<Integer> position = adapter.getPositionList();
         deleteList = NoteEntryAdapter.deleteList1;
         int y=deleteList.size();
         for(int i=0;i<y;i++)
         {
             NoteEntry NE = deleteList.get(i);
             String Title = NE.getTitle();
-            String deletedpath = path+"/"+Title;
-            File file = new File(deletedpath);
-            file.delete();
+            final Query query = mNotes.orderByChild("NoteTitle").equalTo(Title);
+            query.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    for (DataSnapshot child:dataSnapshot.getChildren())
+                    {
+                        int Noteid = Integer.parseInt(child.getKey());
+                        Query queryremoveimage = mImages.orderByChild("note_id").equalTo(Noteid);
+                        queryremoveimage.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot child:dataSnapshot.getChildren())
+                                {
+                                    child.getRef().removeValue();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        Query queryremoveFile = mFiles.orderByChild("note_id").equalTo(Noteid);
+                        queryremoveFile.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                for (DataSnapshot child:dataSnapshot.getChildren())
+                                {
+                                    child.getRef().removeValue();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                            }
+                        });
+                        child.getRef().removeValue();
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+            int temppos = position.get(i);
+            noteEntryList.remove(temppos);
+            recyclerView.removeViewAt(temppos);
+            adapter.notifyItemRemoved(temppos);
+            adapter.notifyItemRangeRemoved(temppos,noteEntryList.size());
         }
+        adapter.getPositionList().clear();
         deleteList.clear();
-        recreate();
     }
     public String getPath()
     {
@@ -524,8 +587,10 @@ public class MainMenuActivity extends AppCompatActivity {
                                             Date = dataSnapshot.child(String.valueOf(y)).child("DateOfCreation").getValue().toString();
                                             Kwords = dataSnapshot.child(String.valueOf(y)).child("Keywords").getValue().toString();
                                             String Title = dataSnapshot.child(String.valueOf(y)).child("NoteTitle").getValue().toString();
-                                            noteEntryList.add(new NoteEntry(y, Title, Date, Kwords));
+                                            String Location = dataSnapshot.child(String.valueOf(y)).child("Address").getValue().toString();
+                                            noteEntryList.add(new NoteEntry(y, Title, Date, Kwords,Location));
                                             y++;
+                                            adapter.notifyDataSetChanged();
                                             found++;
 
                                         }
@@ -538,7 +603,6 @@ public class MainMenuActivity extends AppCompatActivity {
 
 
                             }
-                            //Toast.makeText(MainMenuActivity.this,"Den Mphke Sthn IF",Toast.LENGTH_LONG).show();
 
                         }
 
@@ -559,7 +623,6 @@ public class MainMenuActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-       adapter.notifyDataSetChanged();
     }
 
 }
