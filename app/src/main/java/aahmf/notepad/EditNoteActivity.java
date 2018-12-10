@@ -59,6 +59,7 @@ public class EditNoteActivity extends AppCompatActivity {
     static ArrayList<Uri>Images = new ArrayList<Uri>();
     ArrayList<Uri> filesUris= new ArrayList<Uri>();
     private DatabaseReference mImages = FirebaseDatabase.getInstance().getReference("Images");
+    private DatabaseReference Text = FirebaseDatabase.getInstance().getReference("Content");
     private  int id=1,imageid=1;
     private FirebaseUser user = LogInActivity.getUser();
     private DatabaseReference mNotes = FirebaseDatabase.getInstance().getReference("Notes");
@@ -82,9 +83,11 @@ public class EditNoteActivity extends AppCompatActivity {
         Title=NoteEntryAdapter.getTitle();
         GalleryEdit.ImagePaths3.clear();
         //loadXML(Title);
-
+        GetOnlineText(uid2,Title);
         incrementCounterImages();
+
         GetOnlineNotes(uid2,Title);
+
 
         ArrayAdapter<String> adapterOne = new ArrayAdapter<>(EditNoteActivity.this,android.R.layout.
                 simple_spinner_item,coloursTwo);
@@ -139,6 +142,9 @@ public class EditNoteActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()){
             case R.id.save:
+                DatabaseReference key = mNotes.child(String.valueOf(id));
+                DatabaseReference Content = key.child("Content");
+                Content.setValue(WriteNote.getText().toString());
                 if(ViewNoteActivity.Images.size()!=0) {
                     for (int i = ViewNoteActivity.Images.size(); i < GalleryEdit.ImagePaths2.size(); i++) {
 
@@ -548,6 +554,61 @@ public class EditNoteActivity extends AppCompatActivity {
             }
         });
     }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+    public void GetOnlineText(final String uid, final  String Tit)
+    {
+
+        mNotes.addListenerForSingleValueEvent(new ValueEventListener()
+        {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+            {
+
+                Query query = mNotes.orderByChild("UserId_Title").equalTo(uid + "_" + Tit);
+                query.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        for (DataSnapshot child : dataSnapshot.getChildren()) {
+                            Id = Integer.parseInt(child.getKey());
+                            Query query2 = mNotes.orderByChild("UserId_Title").equalTo(uid + "_" + Tit);
+                            query2.addListenerForSingleValueEvent(new ValueEventListener()
+                            {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                                {
+                                    if(dataSnapshot.exists())
+                                    {
+                                        for (DataSnapshot child : dataSnapshot.getChildren())
+                                        {
+                                            String path = child.child("Content").getValue().toString();
+                                            WriteNote.setText(path);
+
+
+
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+            }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
