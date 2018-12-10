@@ -346,7 +346,7 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             NoteTitle = Title.getText().toString();
-                            WriteXml(NoteTitle);
+                           // WriteXml(NoteTitle);
                             //ONLLINE=======================================================================
                             //primary key
 
