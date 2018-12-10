@@ -7,12 +7,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -54,12 +58,18 @@ import com.google.firebase.database.Query;
 import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -72,7 +82,7 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 177;
     private int STORAGE_PERMISSION_CODE = 1;
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 177, XML_BROWSER=43;
+    private static final int XML_BROWSER=43;
     private ImageButton ExportNote;
     private ImageButton ImportNote;
     private ImageButton CancelNote;
@@ -330,6 +340,8 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
     }
 
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_newnote, menu);
@@ -525,6 +537,17 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
                 }
             }
         }
+
+        else if(requestCode==XML_BROWSER)
+        {
+            if(resultCode==Activity.RESULT_OK&& data!=null)
+            {
+                Uri uri = data.getData();
+               String realpath=TakeRealPathFromUri.getPath(this,uri);
+               loadXML(realpath);
+            }
+            }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -692,6 +715,169 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
     private void requestStoragePermission(){
         ActivityCompat.requestPermissions(NewNoteActivity.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},STORAGE_PERMISSION_CODE);
     }
+    public void loadXML(String file) {
+
+        ArrayList<String> userData = new ArrayList<String>();
+        try {
+
+            File fisl = new File(file);
+            FileInputStream fis = new FileInputStream(fisl);
+            InputStreamReader isr = new InputStreamReader(fis);
+            char[] inputBuffer = new char[fis.available()];
+            isr.read(inputBuffer);
+            String data = new String(inputBuffer);
+            isr.close();
+            fis.close();
+        }
+        catch (FileNotFoundException e3) {
+            // TODO Auto-generated catch block
+            e3.printStackTrace();
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        XmlPullParserFactory factory = null;
+        try {
+            factory = XmlPullParserFactory.newInstance();
+        }
+        catch (XmlPullParserException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+        }
+        factory.setNamespaceAware(true);
+        XmlPullParser xpp = null;
+        try {
+            xpp = factory.newPullParser();
+        }
+        catch (XmlPullParserException e2) {
+            // TODO Auto-generated catch block
+            e2.printStackTrace();
+        }
+        try {
+
+            File fisl = new File(file);
+            FileInputStream fis = new FileInputStream(fisl);
+            InputStreamReader isr = new InputStreamReader(fis);
+            char[] inputBuffer = new char[fis.available()];
+            isr.read(inputBuffer);
+            String data = new String(inputBuffer);
+            xpp.setInput(new StringReader(data));
+        }
+        catch (FileNotFoundException e3) {
+            // TODO Auto-generated catch block
+            e3.printStackTrace();
+        }
+        catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        catch (XmlPullParserException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        int eventType = 0;
+        try {
+            eventType = xpp.getEventType();
+        }
+        catch (XmlPullParserException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+
+        while (eventType != XmlPullParser.END_DOCUMENT){
+
+            switch (eventType) {
+
+                case XmlPullParser.START_TAG:
+
+                    String tagname = xpp.getName();
+
+
+                    if (tagname.contains("Image")) {
+                        try {
+                            eventType = xpp.next();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (XmlPullParserException e) {
+                            e.printStackTrace();
+                        }
+                        //eventType=XmlPullParser.TEXT;
+                        // if (eventType == XmlPullParser.TEXT)
+                        Gallery.ImagePaths.clear();
+
+                        Gallery.ImagePaths.add(Uri.parse(xpp.getText()));
+                    }
+
+                    if (tagname.contains("keywords")) {
+                        try {
+                            eventType = xpp.next();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (XmlPullParserException e) {
+                            e.printStackTrace();
+                        }
+
+                        Keywords.setText(xpp.getText());
+                    }
+
+                    //if (tagname.equalsIgnoreCase("File" + i)) {
+
+                    if (tagname.contains("File")) {
+                        try {
+                            eventType = xpp.next();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        } catch (XmlPullParserException e) {
+                            e.printStackTrace();
+                        }
+                        //eventType=XmlPullParser.TEXT;
+                        // if (eventType == XmlPullParser.TEXT)
+
+                        filePaths.add(Uri.parse(xpp.getText()));
+                        //}
+                    }
+
+
+                    break;
+            }
+            if (eventType == XmlPullParser.START_DOCUMENT) {
+                System.out.println("Start document");
+            }
+            else if (eventType == XmlPullParser.START_TAG) {
+                System.out.println("Start tag "+xpp.getName());
+            }
+            else if (eventType == XmlPullParser.END_TAG) {
+                System.out.println("End tag "+xpp.getName());
+            }
+            else if(eventType == XmlPullParser.TEXT) {
+                userData.add(xpp.getText());
+            }
+
+            try {
+                eventType = xpp.next();
+            }
+            catch (XmlPullParserException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }}
+
+
+
+
+
+
+
+
+        String Text = userData.get(0);
+        //String password = userData.get(1);
+        WriteNote.setText(Text);
+    }
+
 
 
 }
