@@ -67,7 +67,7 @@ import java.util.Locale;
 
 public class NewNoteActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 177;
+    private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 177, XML_BROWSER=43;
     private ImageButton ExportNote;
     private ImageButton ImportNote;
     private ImageButton CancelNote;
@@ -124,6 +124,14 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
         incrementCounterImages();
         incrementCounterFiles();
 
+        ImportNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startSearch();
+            }
+        });
+
+
 
         CancelNote.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,6 +174,14 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
             }
         });
     }
+
+    private void startSearch() {
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+               intent.setType("text/xml");
+               intent.addCategory(Intent.CATEGORY_OPENABLE);
+               startActivityForResult(intent.createChooser(intent, "Select XML File"), XML_BROWSER);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
