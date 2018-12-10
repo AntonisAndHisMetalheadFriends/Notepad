@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,6 +30,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -54,6 +56,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import org.xmlpull.v1.XmlSerializer;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -68,6 +71,7 @@ import java.util.Locale;
 public class NewNoteActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 177;
+    private int STORAGE_PERMISSION_CODE = 1;
     private ImageButton ExportNote;
     private ImageButton ImportNote;
     private ImageButton CancelNote;
@@ -88,6 +92,9 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
     private DatabaseReference mImages = FirebaseDatabase.getInstance().getReference("Images");
     private DatabaseReference mFiles = FirebaseDatabase.getInstance().getReference("Files");
     private FirebaseUser user = LogInActivity.getUser();
+    //exportPath = "/data/user/0/aahmf.notepad/pbcnotes";
+    private String exportPath;
+
     private GoogleApiClient mGoogleApiClient;
     private FusedLocationProviderClient mLastLocation;
     private boolean mLocationPermissionGranted =false;
@@ -123,6 +130,7 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
         incrementCounterNotes();
         incrementCounterImages();
         incrementCounterFiles();
+        exportPath = NewNoteActivity.this.getExternalFilesDir(null).getAbsolutePath();
 
 
         CancelNote.setOnClickListener(new View.OnClickListener() {
@@ -165,6 +173,144 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
                 bgColor = getResources().getColor(R.color.colorWhite);
             }
         });
+
+        ExportNote.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (WriteNote.getText().toString().matches("")) {
+                    Toast.makeText(NewNoteActivity.this, "Write Something Before Exporting", Toast.LENGTH_LONG).show();
+                } else {
+                    AlertDialog.Builder DialogBuilder = new AlertDialog.Builder(NewNoteActivity.this);
+
+                    DialogBuilder.setTitle("Give Note Title");
+
+
+                    DialogBuilder.setMessage("Give note title to export");
+                    Title = new EditText(NewNoteActivity.this);
+                    LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            LinearLayout.LayoutParams.MATCH_PARENT);
+                    Title.setLayoutParams(lp);
+                    DialogBuilder.setView(Title);
+
+                    DialogBuilder.setNeutralButton("Choose directory", new DialogInterface.OnClickListener() {
+                        boolean m_newFolderEnabled =true;
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestStoragePermission();
+                            if (ContextCompat.checkSelfPermission(NewNoteActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED &&
+                                    ContextCompat.checkSelfPermission(NewNoteActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                                // Create DirectoryChooserDialog and register a callback
+                                DirectoryChooserDialog directoryChooserDialog =
+                                        new DirectoryChooserDialog(NewNoteActivity.this,
+                                                new DirectoryChooserDialog.ChosenDirectoryListener() {
+                                                    @Override
+                                                    public void onChosenDir(String chosenDir) {
+                                                        exportPath = chosenDir;
+                                                        Toast.makeText(
+                                                                NewNoteActivity.this, "Chosen directory: " +
+                                                                        exportPath, Toast.LENGTH_LONG).show();
+                                                    }
+                                                });
+                                // Toggle new folder button enabling
+                                directoryChooserDialog.setNewFolderEnabled(m_newFolderEnabled);
+                                // Load directory chooser dialog for initial 'm_chosenDir' directory.
+                                // The registered callback will be called upon final directory selection.
+                                directoryChooserDialog.chooseDirectory(exportPath);
+                                m_newFolderEnabled = !m_newFolderEnabled;
+
+                            }
+                            else{
+                                requestStoragePermission();
+                            }
+                        }
+                    });
+
+
+                    DialogBuilder.setPositiveButton("Export", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            String NoteText = WriteNote.getText().toString();
+                            NoteTitle = Title.getText().toString();
+
+
+
+
+                            try {
+                                File dir = new File(exportPath);
+                                if(!dir.exists()){
+                                    dir.mkdir();
+                                }
+                                File file = new File(dir,NoteTitle + ".xml");
+                                FileOutputStream fos = new FileOutputStream(file);
+                                XmlSerializer xmlSerializer = Xml.newSerializer();
+                                StringWriter writer = new StringWriter();
+                                xmlSerializer.setOutput(writer);
+                                xmlSerializer.startDocument("UTF-8", true);
+                                xmlSerializer.startTag(null, "userData");
+                                xmlSerializer.startTag(null,"Text");
+                                xmlSerializer.text(NoteText);
+                                xmlSerializer.endTag(null, "Text");
+                                for(int i = 0;i<Gallery.ImagePaths.size();i++)
+                                {
+                                    xmlSerializer.startTag(null,"Image"+i);
+                                    xmlSerializer.text(Gallery.ImagePaths.get(i).toString());
+                                    xmlSerializer.endTag(null,"Image"+i);
+                                }
+                                for(int i = 0;i<filePaths.size();i++)
+                                {
+                                    xmlSerializer.startTag(null,"File"+i);
+                                    xmlSerializer.text(filePaths.get(i).toString());
+                                    xmlSerializer.endTag(null,"File"+i);
+                                }
+                                xmlSerializer.startTag(null, "keywords");
+                                String kwords = Keywords.getText().toString();
+                                xmlSerializer.text(kwords);
+                                xmlSerializer.endTag(null, "keywords");
+                                xmlSerializer.startTag(null, "Date");
+                                xmlSerializer.text(Date);
+                                xmlSerializer.endTag(null, "Date");
+                                xmlSerializer.endTag(null, "userData");
+                                xmlSerializer.endDocument();
+                                xmlSerializer.flush();
+                                String dataWrite = writer.toString();
+                                fos.write(dataWrite.getBytes());
+                                fos.close();
+                                SharedPreferences mSharedPref = getSharedPreferences("NoteColor", MODE_PRIVATE);
+                                SharedPreferences.Editor mEditor = mSharedPref.edit();
+                                mEditor.putInt(NoteTitle,bgColor);
+                                mEditor.apply();
+                                Toast.makeText(NewNoteActivity.this,"Note exported at" + exportPath,Toast.LENGTH_LONG).show();
+
+                                Intent intent=new Intent(NewNoteActivity.this,MainMenuActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(intent);
+                            }
+                            catch (FileNotFoundException e) {
+
+                                e.printStackTrace();
+                            }
+                            catch (IllegalArgumentException e) {
+                                e.printStackTrace();
+                            }
+                            catch (IllegalStateException e) {
+
+                                e.printStackTrace();
+                            }
+                            catch (IOException e) {
+
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+                    DialogBuilder.create();
+                    DialogBuilder.show();
+                }
+            }
+        });
+
+
     }
 
     @Override
@@ -525,4 +671,10 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
+
+    private void requestStoragePermission(){
+        ActivityCompat.requestPermissions(NewNoteActivity.this, new String[] {Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE},STORAGE_PERMISSION_CODE);
+    }
+
+
 }
