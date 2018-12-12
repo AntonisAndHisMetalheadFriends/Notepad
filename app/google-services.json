@@ -31,6 +31,22 @@
           }
         },
         {
+          "client_id": "137011022867-1rgvbntl3mouph4cg9h5uk7d3tqkpant.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "aahmf.notepad",
+            "certificate_hash": "4f9cd351c91e1c2dab8ab866aacba0c4340e817c"
+          }
+        },
+        {
+          "client_id": "137011022867-chp4f7iir2ovqd48immnb8focatjvmsd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "aahmf.notepad",
+            "certificate_hash": "94a03708ca6f767f8221f1eec528a8628254d90c"
+          }
+        },
+        {
           "client_id": "137011022867-e6glcc0k1at0jeab54b5piqlbmgba9ur.apps.googleusercontent.com",
           "client_type": 3
         }
