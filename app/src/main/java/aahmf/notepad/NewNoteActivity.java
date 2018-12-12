@@ -363,7 +363,7 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
 
                     DialogBuilder.setMessage("Give the note title to the textbox to save the note to your phone");
                     Title = new EditText(NewNoteActivity.this);
-                    Title.setId(R.integer.title_id);
+                    Title.setId((int)(R.integer.title_id));
                     LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
                             LinearLayout.LayoutParams.MATCH_PARENT,
                             LinearLayout.LayoutParams.MATCH_PARENT);
@@ -403,7 +403,10 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
                             title.setValue(NoteTitle);
                             geolocLan.setValue(latitude);
                             geoLocLon.setValue(longitude);
-                            geoLocAddr.setValue(currentAdress.getAddressLine(0));
+                            if(currentAdress!=null)
+                                geoLocAddr.setValue(currentAdress.getAddressLine(0));
+                            else
+                                geoLocAddr.setValue("Unkown");
                             useridAndTitle.setValue(user.getUid() + "_" + NoteTitle);
 
 
@@ -430,6 +433,9 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
 
                             //==============================================================================
                             Gallery.ImagePaths = new ArrayList<>();
+                            Intent inte =new Intent(NewNoteActivity.this,MainMenuActivity.class);
+                            inte.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(inte);
                         }
 
                     });
@@ -654,9 +660,15 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
               if(task.isSuccessful())
               {
                   Location location = (Location) task.getResult();
-                  latitude = location.getLatitude();
-                  longitude = location.getLongitude();
-                  currentAdress = getAddress(latitude,longitude);
+                  if(location!=null){
+                      latitude = location.getLatitude();
+                      longitude = location.getLongitude();
+                      currentAdress = getAddress(latitude,longitude);
+                  }else{
+                      latitude = 0;
+                      longitude = 0;
+                      currentAdress = null;
+                  }
               }
             }
         });

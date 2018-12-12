@@ -78,6 +78,8 @@ public class MainMenuActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
+        if(user==null)
+            user=FirebaseAuth.getInstance().getCurrentUser();
         GetOnlineNotes(user.getUid());
         EditText editText = findViewById(R.id.edittext);
 

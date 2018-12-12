@@ -57,10 +57,12 @@ public class EditNoteActivity extends AppCompatActivity {
     int bgColor;
     private String date,keywords;
     static ArrayList<Uri>Images = new ArrayList<Uri>();
-    ArrayList<Uri> filesUris= new ArrayList<Uri>();
+    ArrayList<Uri> filesUrisOld = new ArrayList<Uri>(),filesUris= new ArrayList<Uri>();
+
     private DatabaseReference mImages = FirebaseDatabase.getInstance().getReference("Images");
+    private DatabaseReference mFiles = FirebaseDatabase.getInstance().getReference("Files");
     private DatabaseReference Text = FirebaseDatabase.getInstance().getReference("Content");
-    private  int id=1,imageid=1;
+    private  int id=1,imageid=1,fileid=1,fileNoteId;
     private FirebaseUser user = LogInActivity.getUser();
     private DatabaseReference mNotes = FirebaseDatabase.getInstance().getReference("Notes");
     private int Id=0;
@@ -85,6 +87,7 @@ public class EditNoteActivity extends AppCompatActivity {
         //loadXML(Title);
         GetOnlineText(uid2,Title);
         incrementCounterImages();
+        incrementCounterFiles();
 
         GetOnlineNotes(uid2,Title);
 
@@ -170,7 +173,16 @@ public class EditNoteActivity extends AppCompatActivity {
 
                     }
                 }
-
+                for (int i = 0; i < filesUris.size(); i++) {
+                    if(!filesUrisOld.contains(filesUris.get(i))){
+                        DatabaseReference filekey = mFiles.child(String.valueOf(fileid));
+                        DatabaseReference path = filekey.child("path");
+                        DatabaseReference NoteId = filekey.child("note_id");
+                        path.setValue(filesUris.get(i).toString());
+                        NoteId.setValue(fileNoteId);
+                        fileid++;
+                    }
+                }
                 startActivity(new Intent(EditNoteActivity.this,MainMenuActivity.class));
                 //WriteXml(Title);
                 Images.clear();
@@ -481,6 +493,30 @@ public class EditNoteActivity extends AppCompatActivity {
 
 
     }
+    public void incrementCounterFiles() {
+
+        Query query = mFiles.orderByKey().limitToLast(1);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    for (DataSnapshot child : dataSnapshot.getChildren()) {
+                        fileid = Integer.parseInt(child.getKey());
+                        fileid++;
+                    }
+                } else return;
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
     public void incrementCounterNotes() {
 
 
@@ -538,6 +574,29 @@ public class EditNoteActivity extends AppCompatActivity {
 
                                         }
                                     }
+
+                                    Query query3 = mFiles.orderByChild("note_id").equalTo(Id);
+                                    query3.addListenerForSingleValueEvent(new ValueEventListener()
+                                    {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                                        {
+                                            if(dataSnapshot.exists())
+                                            {
+                                                for (DataSnapshot child : dataSnapshot.getChildren())
+                                                {
+                                                    String path = child.child("path").getValue().toString();
+                                                    filesUris.add(Uri.parse(path));
+                                                }
+                                                filesUrisOld.addAll(filesUris);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                        }
+                                    });
                                 }
 
                                 @Override
@@ -576,6 +635,7 @@ public class EditNoteActivity extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                             Id = Integer.parseInt(child.getKey());
+                            fileNoteId = Integer.parseInt(child.getKey());
                             Query query2 = mNotes.orderByChild("UserId_Title").equalTo(uid + "_" + Tit);
                             query2.addListenerForSingleValueEvent(new ValueEventListener()
                             {
