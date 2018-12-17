@@ -702,6 +702,7 @@ public class EditNoteActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.exists()) {
+                                        Images.clear();
                                         for (DataSnapshot child : dataSnapshot.getChildren()) {
                                             String path = child.child("path").getValue().toString();
                                             Images.add(Uri.parse(path));
