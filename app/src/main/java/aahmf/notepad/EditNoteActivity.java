@@ -281,14 +281,18 @@ public class EditNoteActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
             case R.id.save:
                 DatabaseReference key = mNotes.child(String.valueOf(id));
                 DatabaseReference Content = key.child("Content");
                 Content.setValue(WriteNote.getText().toString());
-                if (ViewNoteActivity.Images.size() != 0) {
-                    for (int i = ViewNoteActivity.Images.size(); i < GalleryEdit.ImagePaths2.size(); i++) {
+                if (ViewNoteActivity.Images.size() != 0)
+                {
+                    for (int i = ViewNoteActivity.Images.size(); i < GalleryEdit.ImagePaths2.size(); i++)
+                    {
 
                         DatabaseReference imagekey = mImages.child(String.valueOf(imageid));
                         DatabaseReference path = imagekey.child("path");
@@ -299,8 +303,11 @@ public class EditNoteActivity extends AppCompatActivity {
 
 
                     }
-                } else {
-                    for (int i = 0; i < GalleryEdit.ImagePaths2.size(); i++) {
+                }
+                else
+                {
+                    for (int i = 0; i < GalleryEdit.ImagePaths2.size(); i++)
+                    {
 
                         DatabaseReference imagekey = mImages.child(String.valueOf(imageid));
                         DatabaseReference path = imagekey.child("path");
@@ -311,8 +318,10 @@ public class EditNoteActivity extends AppCompatActivity {
 
                     }
                 }
-                for (int i = 0; i < filesUris.size(); i++) {
-                    if (!filesUrisOld.contains(filesUris.get(i))) {
+                for (int i = 0; i < filesUris.size(); i++)
+                {
+                    if (!filesUrisOld.contains(filesUris.get(i)))
+                    {
                         DatabaseReference filekey = mFiles.child(String.valueOf(fileid));
                         DatabaseReference path = filekey.child("path");
                         DatabaseReference NoteId = filekey.child("note_id");
@@ -328,7 +337,8 @@ public class EditNoteActivity extends AppCompatActivity {
 
             case R.id.addfile:
                 Intent intent = new Intent(EditNoteActivity.this, FileGallery.class);
-                for (int z = 0; z < filesUris.size(); z++) {
+                for (int z = 0; z < filesUris.size(); z++)
+                {
                     intent.putExtra("File" + z, filesUris.get(z).toString());
                 }
                 startActivityForResult(intent, File_Request_Code);
@@ -343,7 +353,8 @@ public class EditNoteActivity extends AppCompatActivity {
 
     public void WriteXml(String xmlFile) {
         String NoteText = WriteNote.getText().toString();
-        try {
+        try
+        {
             FileOutputStream fileos = getApplicationContext().openFileOutput(xmlFile, Context.MODE_PRIVATE);
             XmlSerializer xmlSerializer = Xml.newSerializer();
             StringWriter writer = new StringWriter();
@@ -353,14 +364,19 @@ public class EditNoteActivity extends AppCompatActivity {
             xmlSerializer.startTag(null, "Text");
             xmlSerializer.text(NoteText);
             xmlSerializer.endTag(null, "Text");
-            if (GalleryEdit.ImagePaths2.size() == 0) {
-                if (ViewNoteActivity.Images.size() == 0) {
-                    for (int i = 0; i < ViewNoteActivity.Images.size(); i++) {
+            if (GalleryEdit.ImagePaths2.size() == 0)
+            {
+                if (ViewNoteActivity.Images.size() == 0)
+                {
+                    for (int i = 0; i < ViewNoteActivity.Images.size(); i++)
+                    {
                         xmlSerializer.startTag(null, "Image" + i);
                         xmlSerializer.text(ViewNoteActivity.Images.get(i).toString());
                         xmlSerializer.endTag(null, "Image" + i);
                     }
-                } else {
+                }
+                else
+                    {
                     for (int i = 0; i < ViewNoteActivity.Images.size(); i++) {
                         String pp = (ViewNoteActivity.Images.get(i).toString());
                         xmlSerializer.startTag(null, "Image" + i);
@@ -369,15 +385,22 @@ public class EditNoteActivity extends AppCompatActivity {
                     }
                 }
 
-            } else {
-                if (ViewNoteActivity.Images.size() == 0) {
-                    for (int i = 0; i < GalleryEdit.ImagePaths2.size(); i++) {
+            }
+            else
+                {
+                if (ViewNoteActivity.Images.size() == 0)
+                {
+                    for (int i = 0; i < GalleryEdit.ImagePaths2.size(); i++)
+                    {
                         xmlSerializer.startTag(null, "Image" + i);
                         xmlSerializer.text(GalleryEdit.ImagePaths2.get(i).toString());
                         xmlSerializer.endTag(null, "Image" + i);
                     }
-                } else {
-                    for (int i = 0; i < GalleryEdit.ImagePaths2.size(); i++) {
+                }
+                else
+                    {
+                    for (int i = 0; i < GalleryEdit.ImagePaths2.size(); i++)
+                    {
                         String pp = (GalleryEdit.ImagePaths2.get(i).toString());
                         xmlSerializer.startTag(null, "Image" + i);
                         xmlSerializer.text(pp);
@@ -386,7 +409,8 @@ public class EditNoteActivity extends AppCompatActivity {
                 }
             }
 
-            for (int i = 0; i < filesUris.size(); i++) {
+            for (int i = 0; i < filesUris.size(); i++)
+            {
                 String pp = (filesUris.get(i).toString());
                 xmlSerializer.startTag(null, "File" + i);
                 xmlSerializer.text(pp);
@@ -412,21 +436,27 @@ public class EditNoteActivity extends AppCompatActivity {
             Intent intent = new Intent(EditNoteActivity.this, MainMenuActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
-        } catch (FileNotFoundException e) {
-
+        }
+        catch (FileNotFoundException e)
+        {
             e.printStackTrace();
-        } catch (IllegalArgumentException e) {
+        }
+        catch (IllegalArgumentException e)
+        {
             e.printStackTrace();
-        } catch (IllegalStateException e) {
-
+        }
+        catch (IllegalStateException e)
+        {
             e.printStackTrace();
-        } catch (IOException e) {
-
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
     }
 
-    public void loadXML(String file) {
+    public void loadXML(String file)
+    {
 
         ArrayList<String> userData = new ArrayList<String>();
         try {
