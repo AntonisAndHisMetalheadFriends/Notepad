@@ -267,7 +267,7 @@ public class MainMenuActivity extends AppCompatActivity {
         List<CheckBox> checkBoxes = adapter.getCheck();
         if(isSelected==false)
         {
-        for(int i=0;i<list.size();i++)
+        for(int i=0;i<Buttons.size();i++)
         {
 
             Button Edit = Buttons.get(i);
