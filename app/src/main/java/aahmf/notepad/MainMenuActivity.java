@@ -336,12 +336,14 @@ public class MainMenuActivity extends AppCompatActivity {
 
                 }
             });
-            int temppos = position.get(i);
+            /*int temppos = position.get(i);
             noteEntryList.remove(temppos);
             recyclerView.removeViewAt(temppos);
             adapter.notifyItemRemoved(temppos);
-            adapter.notifyItemRangeRemoved(temppos,noteEntryList.size());
+            adapter.notifyItemRangeRemoved(temppos,noteEntryList.size());*/
         }
+        noteEntryList.removeAll(deleteList);
+        adapter.notifyDataSetChanged();
         adapter.getPositionList().clear();
         deleteList.clear();
     }
