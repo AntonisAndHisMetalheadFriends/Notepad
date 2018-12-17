@@ -1,5 +1,6 @@
 package aahmf.notepad;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Looper;
 import android.support.test.espresso.Espresso;
@@ -86,6 +87,20 @@ public class NewNoteActivityTest {
             check = false;
         }
         assertFalse(check);
+
+    }
+
+    @Test
+    public void directoryChooserTest(){
+        onView(withId(R.id.etWriteNote)).perform(typeText("Sample_text"));
+        Espresso.closeSoftKeyboard();
+        onView(withId(R.id.btnExport)).perform(click());
+        onView(withText("Choose directory")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click());
+        Espresso.pressBack();
+        Espresso.pressBack();
+        onView(withText("OK")).inRoot(isDialog()).check(matches(isDisplayed())).perform(click());
+        String expected = "/storage/emulated/0/Android/data";
+        assertEquals(mActivity.exportPath,expected);
 
     }
 

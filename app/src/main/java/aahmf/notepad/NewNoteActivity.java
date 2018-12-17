@@ -104,7 +104,7 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
     private DatabaseReference mFiles = FirebaseDatabase.getInstance().getReference("Files");
     private FirebaseUser user = LogInActivity.getUser();
     //exportPath = "/data/user/0/aahmf.notepad/pbcnotes";
-    private String exportPath;
+    public String exportPath;
 
     private GoogleApiClient mGoogleApiClient;
     private FusedLocationProviderClient mLastLocation;
