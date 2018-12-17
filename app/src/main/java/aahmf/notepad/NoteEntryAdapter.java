@@ -50,7 +50,6 @@ public class NoteEntryAdapter extends RecyclerView.Adapter<NoteEntryAdapter.Note
     String path = main.getPath();
 
 
-
     public NoteEntryAdapter(Context mCtx, List<NoteEntry> noteEntryList) {
         this.mCtx = mCtx;
         this.noteEntryList1 = noteEntryList;
