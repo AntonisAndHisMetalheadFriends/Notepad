@@ -56,7 +56,7 @@ public class GalleryEdit extends AppCompatActivity {
                     .getLayoutParams();
             mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
         }
-        ImagePaths3.clear();
+        //ImagePaths3.clear();
     }
     else
     {
@@ -72,7 +72,7 @@ public class GalleryEdit extends AppCompatActivity {
                     .getLayoutParams();
             mlp.setMargins(0, gvGallery.getHorizontalSpacing(), 0, 0);
         }
-        FirstImages.clear();
+       // FirstImages.clear();
     }
 
 
@@ -91,6 +91,7 @@ public class GalleryEdit extends AppCompatActivity {
         Back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                ImagePaths3.clear();
                 for(int z = 0; z<ImagePaths2.size();z++)
                 {
                     ImagePaths3.add(ImagePaths2.get(z));

@@ -2,6 +2,7 @@ package aahmf.notepad;
 
 import android.app.DownloadManager;
 import android.content.Intent;
+import android.icu.text.DecimalFormat;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -20,7 +21,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterManager;
 
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +35,7 @@ public class GeoLocationOfNotesActivity extends FragmentActivity implements OnMa
     private String  uid = user.getUid();
     private List<Double> longi,lat;
     private List<String> Title,Content;
+    private ClusterManager<MapItem> mClusterManager;
     private DatabaseReference mNotes = FirebaseDatabase.getInstance().getReference("Notes");
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +49,8 @@ public class GeoLocationOfNotesActivity extends FragmentActivity implements OnMa
         lat = new ArrayList<>();
         Title = new ArrayList<>();
         Content = new ArrayList<>();
-        GetNotes(uid);
+GetNotes(uid);
+
     }
 
 
@@ -61,9 +67,15 @@ public class GeoLocationOfNotesActivity extends FragmentActivity implements OnMa
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-
-
-        // Add a marker in Sydney and move the camera
+        mClusterManager = new ClusterManager<MapItem>(GeoLocationOfNotesActivity.this,mMap);
+        mMap.setOnCameraIdleListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
+        mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<MapItem>() {
+            @Override
+            public boolean onClusterClick(Cluster<MapItem> cluster) {
+                return false;
+            }
+        });
 
 
     }
@@ -87,11 +99,44 @@ public class GeoLocationOfNotesActivity extends FragmentActivity implements OnMa
 
                     for(int i=0;i<longi.size();i++)
                     {
-                        LatLng positionOfNote = new LatLng(lat.get(i),longi.get(i));
-                      Marker Note = mMap.addMarker(new MarkerOptions().position(positionOfNote).title(Title.get(i)).snippet("Content :"+Content.get(i)));
-                      Note.setTag(0);
-                        mMap.moveCamera(CameraUpdateFactory.newLatLng(positionOfNote));
+
+                        //Marker Note = mMap.addMarker(new MarkerOptions().position(positionOfNote).title(Title.get(i)).snippet("Content :"+Content.get(i)));
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lat.get(i),longi.get(i)),10));
+
+                        int y = i+1;
+                        DecimalFormat df = new DecimalFormat("#.#####");
+                        String formatedlat = df.format(lat.get(i));
+                        String formatedlon = df.format(longi.get(i));
+                        if(y!=longi.size()) {
+                            String formatedlatnext = df.format(lat.get(y));
+                            String formatedlonnext = df.format(longi.get(y));
+
+
+                            if (formatedlat.matches(formatedlatnext) && formatedlon.matches(formatedlonnext)) {
+                                double offset = i / 150000d;
+                                double lati = lat.get(i) + offset;
+                                double lng = longi.get(i) + offset;
+                                LatLng positionOfNote = new LatLng(lati, lng);
+                                MapItem offsetItem = new MapItem(positionOfNote, Title.get(i), Content.get(i));
+                                mClusterManager.addItem(offsetItem);
+                            } else {
+                                LatLng positionOfNote = new LatLng(lat.get(i), longi.get(i));
+                                MapItem offsetItem = new MapItem(positionOfNote, Title.get(i), Content.get(i));
+                                mClusterManager.addItem(offsetItem);
+                            }
+                        }
+                        else
+                        {
+                            LatLng positionOfNote = new LatLng(lat.get(i), longi.get(i));
+                            MapItem offsetItem = new MapItem(positionOfNote, Title.get(i), Content.get(i));
+                            mClusterManager.addItem(offsetItem);
+                        }
+
+                        // Note.setTag(0);
+                        //mMap.moveCamera(CameraUpdateFactory.newLatLng(positionOfNote));
                     }
+
+
                     mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                         @Override
                         public void onInfoWindowClick(Marker marker) {
@@ -107,12 +152,13 @@ public class GeoLocationOfNotesActivity extends FragmentActivity implements OnMa
 
             }
         });
+
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        GetNotes(uid);
     }
 
 

@@ -376,6 +376,10 @@ public class NewNoteActivity extends AppCompatActivity implements GoogleApiClien
                         public void onClick(DialogInterface dialog, int which) {
                             NoteTitle = Title.getText().toString();
                            // WriteXml(NoteTitle);
+                            SharedPreferences mSharedPref = getSharedPreferences("NoteColor", MODE_PRIVATE);
+                            SharedPreferences.Editor mEditor = mSharedPref.edit();
+                            mEditor.putInt(NoteTitle,bgColor);
+                            mEditor.apply();
                             //ONLLINE=======================================================================
                             //primary key
 
