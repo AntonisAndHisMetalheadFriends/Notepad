@@ -50,6 +50,11 @@ public class LogInActivityTest {
         onView(withId(R.id.btnLogIn)).perform(click());
     }
 
+    @Test
+    public void OpenRegisterActivity() {
+        onView(withId(R.id.btnRgstr)).perform(click());
+    }
+
 
     @After
     public void tearDown() throws Exception {
